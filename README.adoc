@@ -75,6 +75,7 @@ ifeval::[{use-dump-file} != false]
 ==== Dump file: `{use-dump-file}`
 
 * Drop the file into the `Files` section of a project in Neo4j Desktop. Then choose the option to `Create new DBMS from dump` option from the file options.
+
 .Load File
 image::{data-load-image1}[]
 
