@@ -15,7 +15,6 @@
 :bloom-perspective: bloom/Windows_Domains.json,bloom/Attack_Path_Analysis.json
 :guide: documentation/graphs-for-cybersecurity.adoc
 :model: documentation/img/model.svg
-:data-load-image1: images/1-load-file.png
 :data-load-image2: images/2-import-dump-or-create-new-dbms.png
 :data-load-image3: images/3-create-new-graph-dbms.png
 :attack-image: bloom.gif
@@ -76,11 +75,7 @@ ifeval::[{use-dump-file} != false]
 
 * Drop the file into the `Files` section of a project in Neo4j Desktop. Then choose the option to `Create new DBMS from dump` option from the file options.
 
-.Load File
-image::{data-load-image1}[]
-
-
-.Import Dump or Create New Dbms
+.Load file and Import Dump to Create New Dbms
 image::{data-load-image2}[]
 
 
