@@ -79,8 +79,10 @@ ifeval::[{use-dump-file} != false]
 .Load File
 image::{data-load-image1}[]
 
+
 .Import Dump or Create New Dbms
 image::{data-load-image2}[]
+
 
 .Create New DBMS
 image::{data-load-image3}[]
