@@ -19,7 +19,7 @@
 :data-load-image3: images/3-create-new-graph-dbms.png
 :attack-image: bloom.gif
 :rendered-guide: https://guides.neo4j.com/sandbox/{name}/index.html
-:cypher: cypher/
+:cypher: cypher
 :slides: documentation/Cybersecurity_Connections-2021.pdf
 :nodes: 1555
 :relationships: 8395
@@ -59,6 +59,7 @@ Install the following:
 - [APOC for Neo4j v4.4.X](https://neo4j.com/developer/neo4j-apoc/) 
 
 In this demo, the BloodHound Tools project was used to populate a fictitious Active Directory graph in Neo4j.
+
 * https://github.com/voutilad/BloodHound-Tools/tree/update-to-neo4j4[Bloodhound Tools - DBCreator]
 
 We have created a readymade dump file that can be loaded before you walk through queries to get AD environment information finding attack paths.
@@ -74,7 +75,7 @@ Import flat files (csv, json, etc) using Cypher's https://neo4j.com/docs/cypher-
 endif::[]
 
 ifeval::[{use-dump-file} != false]
-==== Dump file: link:{use-dump-file}
+==== Dump file: link:{use-dump-file}[]
 
 * Drop the file into the `Files` section of a project in Neo4j Desktop. Then choose the option to `Create new DBMS from dump` option from the file options three dots button.
 
@@ -104,7 +105,7 @@ Unrendered guide: link:{guide}[]
 
 === The GDS Cypher
 
-==== Initialize: I've provided the GDS cypher queries in link:{cypher}. However, the one you should keep handy is the one to "reset" or initialize the system.
+==== Initialize: I've provided the GDS cypher queries in link:{cypher}[]. However, the one you should keep handy is the one to "reset" or initialize the system.
 
 [source,cypher]
 ----
@@ -128,6 +129,7 @@ CALL gds.graph.create.cypher("attackPaths",
 == Installing the Bloom Perspectives
 
 The provided Bloom perspectives (in link:{bloom-perspective}) can be imported very easily. Make sure to import them both.
+
 * https://neo4j.com/docs/bloom-user-guide/current/bloom-perspectives/[Importing a bloom perspective]
 
 They contain all the cypher statements used by Bloom, so unless you want to try the GDS queries, you're good to explore the graph!
@@ -139,16 +141,18 @@ user accounts used for the queries.
 
 == Presentation Materials
 
-Slides are available here link:{slides}
+Slides are available here link:{slides}[]
 
-More of a video person? The usa case [recording](https://youtu.be/2O2JfqeHJR4) is available on YouTube.
+More of a video person? The use case recording is available on YouTube.
+
+* https://youtu.be/2O2JfqeHJR4 [Recording Link]
 
 == References
 * https://github.com/BloodHoundAD/BloodHound[BloodHound]
 
 * https://ernw.de/download/BloodHoundWorkshop/ERNW_DogWhispererHandbook.pdf[Handbook PDF]
 
-* https://en.wikipedia.org/wiki/Computer_security [Cyber Security]
+* https://en.wikipedia.org/wiki/Computer_security[Cyber Security]
 
 * https://neo4j.com/docs/bloom-user-guide/current/bloom-perspectives/[Neo4j Bloom Persectives]
 
