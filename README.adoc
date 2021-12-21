@@ -56,10 +56,10 @@ This demo is based on the data and themes from the BloodHound project. Bloodhoun
 
 Install the following:
 
-- [Neo4j 4.4.x](https://neo4j.com/download/)
-- [Neo4j Graph Data Science Library for Neo4j 4.4.X](https://neo4j.com/docs/graph-data-science/current/)
-- [Neo4j Bloom](https://neo4j.com/product/bloom/)
-- [APOC for Neo4j v4.4.X](https://neo4j.com/developer/neo4j-apoc/) 
+* https://neo4j.com/download/[Neo4j 4.4.x]
+* https://neo4j.com/docs/graph-data-science/current/[Neo4j Graph Data Science Library for Neo4j 4.4.X]
+* https://neo4j.com/product/bloom/[Neo4j Bloom]
+* https://neo4j.com/developer/neo4j-apoc/[APOC for Neo4j v4.4.X]
 
 In this demo, the BloodHound Tools project was used to populate a fictitious Active Directory graph in Neo4j.
 
