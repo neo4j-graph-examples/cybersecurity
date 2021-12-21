@@ -1,0 +1,164 @@
+== Neo4j Connections: Graphs for Cybersecurity
+:name: graphs-for-cybersecurity
+:long-name: Neo4j Connections: Graphs for Cybersecurity
+:description: Cybersecurity, Active Directory environment auditing and analysis of possible attack paths using graph
+:icon: font
+:tags: Cybersecurity, ITSecurity, ActiveDirectory, Auditing, Attack Paths Analysis, AD Management
+:author: Neo4j
+:demodb: true
+:data: false
+:use-load-script: false
+:use-dump-file: data/cybersecurity-database-44.dump
+:zip-file: false
+:use-plugin: false
+:target-db-version: 4.4
+:bloom-perspective: bloom/Windows_Domains.json,bloom/Attack_Path_Analysis.json
+:guide: documentation/graphs-for-cybersecurity.adoc
+:model: documentation/img/model.svg
+:data-load-image1: images/1-load-file.png
+:data-load-image2: images/2-import-dump-or-create-new-dbms.png
+:data-load-image3: images/3-create-new-graph-dbms.png
+:attack-image: bloom.gif
+:rendered-guide: https://guides.neo4j.com/sandbox/{name}/index.html
+:nodes: 1555
+:relationships: 8395
+++++
+<br>
+++++
+
+Demo as [presented](https://youtu.be/2O2JfqeHJR4) on 31 Mar, 2021.
+
+.Bloom
+image::{attack-image}[]
+
+++++
+<br>
+++++
+
+=== Background
+Computer security, cybersecurity, or information technology security (IT security) is the protection of computer systems and networks from information disclosure, theft of or damage to their hardware, software, or electronic data, as well as from the disruption or misdirection of the services they provide.
+
+The field is becoming increasingly significant due to the continuously expanding reliance on computer systems, the Internet and wireless network standards such as Bluetooth and Wi-Fi, and due to the growth of "smart" devices, including smartphones, televisions, and the various devices that constitute the "Internet of things". Cybersecurity is also one of the significant challenges in the contemporary world, due to its complexity, both in terms of political usage and technology.
+
+Losses attributed to cybercrime are expected to reach $10.5 trillion by 2025*, growing at a rate of 15 percent annually. Costs include damage and destruction of data, stolen money, theft of intellectual property, personal and financial data, investigation, restoration, and more. While the digital economy is flourishing, [68 percent] of business leaders recognize their cybersecurity risks are also increasing, urging many to invest in the right tools. Gartner predicts the global information security market will reach a staggering $170.4 billion USD by 2022*.
+
+This demo is based on the data and themes from the BloodHound project. Bloodhound is great for auditing your active directory environment, finding attack paths through Windows Infrastructure. It uses Neo4j Graph Database. We recommend looking into BloodHound or reading the very comprehensive handbook on it to learn more about Active Directory attack paths and auditing techniques.
+
+* https://github.com/BloodHoundAD/BloodHound[BloodHound]
+* https://ernw.de/download/BloodHoundWorkshop/ERNW_DogWhispererHandbook.pdf[BloodHound Handbook]
+
+=== Prerequisites
+
+Install the following:
+
+- [Neo4j 4.4.x](https://neo4j.com/download/)
+- [Neo4j Graph Data Science Library for Neo4j 4.4.X](https://neo4j.com/docs/graph-data-science/current/)
+- [Neo4j Bloom](https://neo4j.com/product/bloom/)
+- [APOC for Neo4j v4.4.X](https://neo4j.com/developer/neo4j-apoc/) 
+
+In this demo, the BloodHound Tools project was used to populate a fictitious Active Directory graph in Neo4j.
+* https://github.com/voutilad/BloodHound-Tools/tree/update-to-neo4j4[Bloodhound Tools - DBCreator]
+
+We have created a readymade dump file that can be loaded before you walk through queries to get AD environment information finding attack paths.
+
+== Populating the Graph
+
+Load graph data via the following:
+
+ifeval::[{data} != false]
+==== Data files: `{data}`
+
+Import flat files (csv, json, etc) using Cypher's https://neo4j.com/docs/cypher-manual/current/clauses/load-csv/[`LOAD CSV`], https://neo4j.com/labs/apoc/[APOC library], or https://neo4j.com/developer/data-import/[other methods].
+endif::[]
+
+ifeval::[{use-dump-file} != false]
+==== Dump file: `{use-dump-file}`
+
+* Drop the file into the `Files` section of a project in Neo4j Desktop. Then choose the option to `Create new DBMS from dump` option from the file options.
+.Load File
+image::{data-load-image1}[]
+
+.Import Dump or Create New Dbms
+image::{data-load-image2}[]
+
+.Create New DBMS
+image::{data-load-image3}[]
+
+* Use the neo4j-admin tool to load data from the command line with the command below.
+
+[source,shell,subs=attributes]
+----
+bin/neo4j-admin load --from {use-dump-file} [--database "database"]
+----
+
+* Upload the dump file to Neo4j Aura via https://console.neo4j.io/#import-instructions
+endif::[]
+
+== Browser Guide
+
+Rendered guide available via: `:play {rendered-guide}`
+
+Unrendered guide: link:{guide}[]
+
+## The GDS Cypher
+
+I've provided the GDS cypher queries in [./cypher](./cypher). However, the one you should keep handy is the one to "reset" or initialize the system.
+
+```cypher
+// Attack Path - Prep
+// Drop graphs
+CALL gds.graph.list() YIELD graphName
+CALL gds.graph.drop(graphName) YIELD graphName AS dropped
+RETURN count(*);
+
+// Drop attack paths
+MATCH ()-[r:ATTACK_PATH]->() DELETE r;
+
+// Rebuild projection
+CALL gds.graph.create.cypher("attackPaths", 
+    "MATCH (n) RETURN id(n) AS id",
+    "MATCH (a)-[r]->(b) WHERE type(r) <> 'PATH' AND type(r) <> 'RAW_PATH' " +
+    "  AND type(r) <> 'PATH_0' RETURN id(a) AS source, id(b) AS target"
+);
+```
+
+## Installing the Bloom Perspectives
+
+The provided Bloom perspectives (in [./bloom](./bloom)) can be imported[4]
+very easily. Make sure to import them both.
+
+They contain all the cypher statements used by Bloom, so unless you want to
+try the GDS queries, you're good to explore the graph!
+
+> Make sure that you run the initialization cypher mentioned in the previous
+> section first!
+
+Keep in mind that if you generate your own data, you may need to tweak the
+user accounts used for the queries.
+
+## Presentation Materials
+
+Slides are available [here](./documentation/Cybersecurity_Connections-2021.pdf).
+
+You can also skip some steps and load this [dump file](.data/entity_resolution.dump).
+
+More of a video person? The usa case [recording](https://youtu.be/2O2JfqeHJR4) is available on YouTube.
+
+## References
+[1] [BloodHound](https://github.com/BloodHoundAD/BloodHound)
+
+[2] [Handbook PDF](https://ernw.de/download/BloodHoundWorkshop/ERNW_DogWhispererHandbook.pdf)
+
+[3] [Cyber Security] (https://en.wikipedia.org/wiki/Computer_security)
+
+[4] [Neo4j Bloom Persectives](https://neo4j.com/docs/bloom-user-guide/current/bloom-perspectives/)
+
+[5] [Neo4j for Cyber Security](https://neo4j.com/press-releases/neo4j-for-cybersecurity/)
+
+[6] [Hackerpocalypse Cybercrime Report-2016](https://cybersecurityventures.com/hackerpocalypse-cybercrime-report-2016/)
+
+[7] [Cost of Cybercrime Study](https://www.accenture.com/_acnmedia/pdf-96/accenture-2019-cost-of-cybercrime-study-final.pdf)
+
+[8] [Forecast Analysis: Information Security, Worldwide](https://www.gartner.com/en/documents/3889055/forecast-analysis-information-security-worldwide-2q18-up)
+
+[9] [BloodHound Datacreator Library](https://github.com/voutilad/BloodHound-Tools/tree/update-to-neo4j4)
