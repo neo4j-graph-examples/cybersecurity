@@ -100,12 +100,6 @@ bin/neo4j-admin load --from {use-dump-file} --database "[database name]"
 * For Aura Instance - Upload the dump file to Neo4j Aura via https://console.neo4j.io/#import-instructions
 endif::[]
 
-== Browser Guide
-
-Rendered guide available via: `:play {rendered-guide}`
-
-Unrendered guide: link:{guide}[]
-
 === The GDS Cypher
 
 ==== Initialize: I've provided the GDS cypher queries in link:{cypher}[]. However, the one you should keep handy is the one to "reset" or initialize the system.
@@ -128,6 +122,12 @@ CALL gds.graph.create.cypher("attackPaths",
     "  AND type(r) <> 'PATH_0' RETURN id(a) AS source, id(b) AS target"
 );
 ----
+
+== Browser Guide
+
+Rendered guide available via: `:play {rendered-guide}`
+
+Unrendered guide: link:{guide}[]
 
 == Installing the Bloom Perspectives
 
