@@ -148,7 +148,7 @@ Slides are available here link:{slides}[]
 
 More of a video person? The use case recording is available on YouTube.
 
-* https://youtu.be/2O2JfqeHJR4 [Recording Link]
+* https://youtu.be/2O2JfqeHJR4[Recording Link]
 
 == References
 * https://github.com/BloodHoundAD/BloodHound[BloodHound]
