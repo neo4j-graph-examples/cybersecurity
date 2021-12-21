@@ -19,13 +19,16 @@
 :data-load-image3: images/3-create-new-graph-dbms.png
 :attack-image: bloom.gif
 :rendered-guide: https://guides.neo4j.com/sandbox/{name}/index.html
+:cypher: cypher/
+:slides: documentation/Cybersecurity_Connections-2021.pdf
 :nodes: 1555
 :relationships: 8395
 ++++
 <br>
 ++++
 
-Demo as [presented](https://youtu.be/2O2JfqeHJR4) on 31 Mar, 2021.
+Demo as presented on 31 Mar, 2021.
+* https://youtu.be/2O2JfqeHJR4(Demo Link)
 
 .Bloom
 image::{attack-image}[]
@@ -71,7 +74,7 @@ Import flat files (csv, json, etc) using Cypher's https://neo4j.com/docs/cypher-
 endif::[]
 
 ifeval::[{use-dump-file} != false]
-==== Dump file: `{use-dump-file}`
+==== Dump file: link:{use-dump-file}
 
 * Drop the file into the `Files` section of a project in Neo4j Desktop. Then choose the option to `Create new DBMS from dump` option from the file options three dots button.
 
@@ -85,9 +88,9 @@ image::{data-load-image3}[]
 
 * Alternatively, for locally hosted database, you can use the neo4j-admin tool to load data from the command line with the command below.
 
-[source,shell,subs=attributes]
+[source,cypher]
 ----
-bin/neo4j-admin load --from {use-dump-file} [--database "database"]
+bin/neo4j-admin load --from {use-dump-file} --database "[database name]"
 ----
 
 * For Aura Instance - Upload the dump file to Neo4j Aura via https://console.neo4j.io/#import-instructions
@@ -99,11 +102,12 @@ Rendered guide available via: `:play {rendered-guide}`
 
 Unrendered guide: link:{guide}[]
 
-## The GDS Cypher
+=== The GDS Cypher
 
-I've provided the GDS cypher queries in [./cypher](./cypher). However, the one you should keep handy is the one to "reset" or initialize the system.
+==== Initialize: I've provided the GDS cypher queries in link:{cypher}. However, the one you should keep handy is the one to "reset" or initialize the system.
 
-```cypher
+[source,cypher]
+----
 // Attack Path - Prep
 // Drop graphs
 CALL gds.graph.list() YIELD graphName
@@ -119,45 +123,41 @@ CALL gds.graph.create.cypher("attackPaths",
     "MATCH (a)-[r]->(b) WHERE type(r) <> 'PATH' AND type(r) <> 'RAW_PATH' " +
     "  AND type(r) <> 'PATH_0' RETURN id(a) AS source, id(b) AS target"
 );
-```
+----
 
-## Installing the Bloom Perspectives
+== Installing the Bloom Perspectives
 
-The provided Bloom perspectives (in [./bloom](./bloom)) can be imported[4]
-very easily. Make sure to import them both.
+The provided Bloom perspectives (in link:{bloom-perspective}) can be imported very easily. Make sure to import them both.
+* https://neo4j.com/docs/bloom-user-guide/current/bloom-perspectives/[Importing a bloom perspective]
 
-They contain all the cypher statements used by Bloom, so unless you want to
-try the GDS queries, you're good to explore the graph!
+They contain all the cypher statements used by Bloom, so unless you want to try the GDS queries, you're good to explore the graph!
 
-> Make sure that you run the initialization cypher mentioned in the previous
-> section first!
+Make sure that you run the initialization cypher mentioned in the previous section first!
 
 Keep in mind that if you generate your own data, you may need to tweak the
 user accounts used for the queries.
 
-## Presentation Materials
+== Presentation Materials
 
-Slides are available [here](./documentation/Cybersecurity_Connections-2021.pdf).
-
-You can also skip some steps and load this [dump file](.data/entity_resolution.dump).
+Slides are available here link:{slides}
 
 More of a video person? The usa case [recording](https://youtu.be/2O2JfqeHJR4) is available on YouTube.
 
-## References
-[1] [BloodHound](https://github.com/BloodHoundAD/BloodHound)
+== References
+* https://github.com/BloodHoundAD/BloodHound[BloodHound]
 
-[2] [Handbook PDF](https://ernw.de/download/BloodHoundWorkshop/ERNW_DogWhispererHandbook.pdf)
+* https://ernw.de/download/BloodHoundWorkshop/ERNW_DogWhispererHandbook.pdf[Handbook PDF]
 
-[3] [Cyber Security] (https://en.wikipedia.org/wiki/Computer_security)
+* https://en.wikipedia.org/wiki/Computer_security [Cyber Security]
 
-[4] [Neo4j Bloom Persectives](https://neo4j.com/docs/bloom-user-guide/current/bloom-perspectives/)
+* https://neo4j.com/docs/bloom-user-guide/current/bloom-perspectives/[Neo4j Bloom Persectives]
 
-[5] [Neo4j for Cyber Security](https://neo4j.com/press-releases/neo4j-for-cybersecurity/)
+* https://neo4j.com/press-releases/neo4j-for-cybersecurity/[Neo4j for Cyber Security]
 
-[6] [Hackerpocalypse Cybercrime Report-2016](https://cybersecurityventures.com/hackerpocalypse-cybercrime-report-2016/)
+* https://cybersecurityventures.com/hackerpocalypse-cybercrime-report-2016/[Hackerpocalypse Cybercrime Report-2016]
 
-[7] [Cost of Cybercrime Study](https://www.accenture.com/_acnmedia/pdf-96/accenture-2019-cost-of-cybercrime-study-final.pdf)
+* https://www.accenture.com/_acnmedia/pdf-96/accenture-2019-cost-of-cybercrime-study-final.pdf[Cost of Cybercrime Study]
 
-[8] [Forecast Analysis: Information Security, Worldwide](https://www.gartner.com/en/documents/3889055/forecast-analysis-information-security-worldwide-2q18-up)
+* https://www.gartner.com/en/documents/3889055/forecast-analysis-information-security-worldwide-2q18-up[Forecast Analysis: Information Security, Worldwide]
 
-[9] [BloodHound Datacreator Library](https://github.com/voutilad/BloodHound-Tools/tree/update-to-neo4j4)
+* https://github.com/voutilad/BloodHound-Tools/tree/update-to-neo4j4[BloodHound Datacreator Library]
