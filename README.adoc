@@ -38,7 +38,8 @@ image::{attack-image}[width=750]
 <br>
 ++++
 
-////=== Background
+////
+=== Background
 Computer security, cybersecurity, or information technology security (IT security) is the protection of computer systems and networks from information disclosure, theft of or damage to their hardware, software, or electronic data, as well as from the disruption or misdirection of the services they provide.
 
 The field is becoming increasingly significant due to the continuously expanding reliance on computer systems, the Internet and wireless network standards such as Bluetooth and Wi-Fi, and due to the growth of "smart" devices, including smartphones, televisions, and the various devices that constitute the "Internet of things". Cybersecurity is also one of the significant challenges in the contemporary world, due to its complexity, both in terms of political usage and technology.
