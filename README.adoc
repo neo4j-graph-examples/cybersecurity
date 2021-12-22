@@ -10,7 +10,7 @@
 :use-load-script: false
 :use-dump-file: data/cybersecurity-database-44.dump
 :zip-file: false
-:use-plugin: false
+:use-plugin: apoc, graph-data-science
 :target-db-version: 4.4
 :bloom-perspective: bloom/Windows_Domains.json,bloom/Attack_Path_Analysis.json
 :guide: documentation/graphs-for-cybersecurity.adoc
@@ -18,7 +18,7 @@
 :data-load-image2: images/2-import-dump-or-create-new-dbms.png
 :data-load-image3: images/3-create-new-graph-dbms.png
 :attack-image: bloom.gif
-:rendered-guide: https://guides.neo4j.com/sandbox/{name}/index.html
+:rendered-guide: https://guides.neo4j.com/sandbox/{name}
 :cypher: cypher
 :slides: documentation/Cybersecurity_Connections-2021.pdf
 :nodes: 1555
@@ -52,14 +52,22 @@ This demo is based on the data and themes from the BloodHound project. Bloodhoun
 * https://github.com/BloodHoundAD/BloodHound[BloodHound]
 * https://ernw.de/download/BloodHoundWorkshop/ERNW_DogWhispererHandbook.pdf[BloodHound Handbook]
 
-=== Prerequisites
+=== Setup
+
+This is for Neo4j version: {target-db-version}
 
 Install the following:
 
 * https://neo4j.com/download/[Neo4j 4.4.x]
-* https://neo4j.com/docs/graph-data-science/current/[Neo4j Graph Data Science Library for Neo4j 4.4.X]
 * https://neo4j.com/product/bloom/[Neo4j Bloom]
+
+ifeval::[{use-plugin} != false]
+Required plugins: {use-plugin}
+
 * https://neo4j.com/developer/neo4j-apoc/[APOC for Neo4j v4.4.X]
+* https://neo4j.com/docs/graph-data-science/current/[Neo4j Graph Data Science Library for Neo4j 4.4.X]
+
+endif::[]
 
 In this demo, the BloodHound Tools project was used to populate a fictitious Active Directory graph in Neo4j.
 
