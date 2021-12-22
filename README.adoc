@@ -38,13 +38,13 @@ image::{attack-image}[width=750]
 <br>
 ++++
 
-=== Background
+////=== Background
 Computer security, cybersecurity, or information technology security (IT security) is the protection of computer systems and networks from information disclosure, theft of or damage to their hardware, software, or electronic data, as well as from the disruption or misdirection of the services they provide.
 
 The field is becoming increasingly significant due to the continuously expanding reliance on computer systems, the Internet and wireless network standards such as Bluetooth and Wi-Fi, and due to the growth of "smart" devices, including smartphones, televisions, and the various devices that constitute the "Internet of things". Cybersecurity is also one of the significant challenges in the contemporary world, due to its complexity, both in terms of political usage and technology.
 
 Losses attributed to cybercrime are expected to reach $10.5 trillion by 2025*, growing at a rate of 15 percent annually. Costs include damage and destruction of data, stolen money, theft of intellectual property, personal and financial data, investigation, restoration, and more. While the digital economy is flourishing, [68 percent] of business leaders recognize their cybersecurity risks are also increasing, urging many to invest in the right tools. Gartner predicts the global information security market will reach a staggering $170.4 billion USD by 2022*.
-
+////
 Graph database can help in implementing an effective solution in the field of Cyber Security.
 
 This demo is based on the data and themes from the BloodHound project. Bloodhound is a great tool for auditing your active directory environment, finding attack paths through Windows AD Infrastructure. It uses Neo4j Graph Database. We recommend looking into BloodHound or reading the very comprehensive handbook on it to learn more about Active Directory attack paths and auditing techniques.
