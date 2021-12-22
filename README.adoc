@@ -32,7 +32,7 @@ Demo as presented on 31 Mar, 2021.
 * https://youtu.be/2O2JfqeHJR4[Demo Link]
 
 .Bloom
-image::{attack-image}[]
+image::{attack-image}[width=650]
 
 ++++
 <br>
@@ -83,12 +83,12 @@ ifeval::[{use-dump-file} != false]
 * Drop the file into the `Files` section of a project in Neo4j Desktop. Then choose the option to `Create new DBMS from dump` option from the file options three dots button.
 
 .Load file and Import Dump to Create New Dbms
-image::{data-load-image2}[]
+image::{data-load-image2}[width=650]
 ++++
 <br>
 ++++
 .Create New DBMS
-image::{data-load-image3}[]
+image::{data-load-image3}[width=650]
 
 * Alternatively, for locally hosted database, you can use the neo4j-admin tool to load data from the command line with the command below.
 
