@@ -4,7 +4,7 @@
 :icon: font
 :tags: Cybersecurity, ITSecurity, ActiveDirectory, Auditing, Attack Paths Analysis, AD Management
 :author: Neo4j
-:demodb: true
+:demodb: false
 :data: true
 :use-load-script: false
 :use-dump-file: data/cyber-security-ad-44.dump
