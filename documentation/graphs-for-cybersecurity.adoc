@@ -43,12 +43,8 @@ Details:
 
 Nodes {nodes} Relationships {relationships}
 
-Model
-[subs=attributes]
-++++
-<img src="http:\\localhost\img\model.svg" class="img-responsive">
-++++
-Model
+.Model
+image::{img}/{model}[]
 
 === Notes
 In this demonstration, we have used Neo4j APOC (Awesome Procedures on Cypher) and Neo4j GDS (Graph Data Science) libraries few Cypher queries.
@@ -191,11 +187,8 @@ RETURN path
 
 Above preview query shows that the particular user in question can take numerous paths to reach Domain-Admin.
 
-Attack paths from a user to a high value asset
-[subs=attributes]
-++++
-<img src="http:\\localhost\img\attack-path-preview.svg" class="img-responsive">
-++++
+.Attack paths from a user to a high value asset
+image::{img}/{attack-path}[]
 
 == Materializing attack paths data
 Like we saw for one user, what is the possible extent of this? We can check all the possible paths like this in whole network.
