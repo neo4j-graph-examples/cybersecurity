@@ -1,0 +1,342 @@
+== Neo4j Connections: Graphs for Cybersecurity
+:name: graphs-for-cybersecurity
+:long-name: Neo4j Connections: Graphs for Cybersecurity
+:description: Cybersecurity, Active Directory environment auditing and analysis of possible attack paths using graph
+:icon: font
+:tags: Cybersecurity, ITSecurity, ActiveDirectory, Auditing, Attack Paths Analysis, AD Management
+:author: Neo4j
+:model: model.svg
+:example: example.svg
+:attack-path: attack-path-preview.svg
+:dump: https://github.com/neo4j-graph-examples/entity-resolution/tree/main/data
+:nodes: 953
+:relationships: 4890
+:img: img
+
+=== Background
+Computer security, cybersecurity or information technology security (IT security) is the protection of computer systems and networks from information disclosure, theft of or damage to their hardware, software, or electronic data, as well as from the disruption or misdirection of the services they provide.
+
+The field is becoming increasingly significant due to the continuously expanding reliance on computer systems, the Internet and wireless network standards such as Bluetooth and Wi-Fi, and due to the growth of "smart" devices, including smartphones, televisions, and the various devices that constitute the "Internet of things". Cybersecurity is also one of the significant challenges in the contemporary world, due to its complexity, both in terms of political usage and technology.
+
+Losses attributed to cybercrime are expected to reach $10.5 trillion by 2025*, growing at a rate of 15 percent annually. Costs include damage and destruction of data, stolen money, theft of intellectual property, personal and financial data, investigation, restoration, and more. While the digital economy is flourishing, 68 percent of business leaders recognize their cybersecurity risks are also increasing, urging many to invest in the right tools. Gartner predicts the global information security market will reach a staggering $170.4 billion USD by 2022*.
+
+Graph database can help in implementing an effective solution in the field of Cyber Security.
+
+== Demo Use-case
+This demo is based on the data and themes from the BloodHound project. Bloodhound is a great tool for auditing your active directory environment. It uses Neo4j Graph Database. We recommend looking into BloodHound or reading the very comprehensive handbook on it to learn more about Blood Hound.
+
+* https://github.com/BloodHoundAD/BloodHound[BloodHound^]
+* https://ernw.de/download/BloodHoundWorkshop/ERNW_DogWhispererHandbook.pdf[BloodHound Handbook^]
+
+We have conceptualized BloodHound example to prepare a fictitious Active Directory environment and showed some useful analysis.
+
+Active directory helps IT teams monitor various network resources and users. It allows to grand and revoke different user permissions.  Active Directory comprises of objects. We have considered below sample objects for this use cases.
+
+* User
+* Computer
+* Group
+* Domain
+* Group Policy Object (GPO) - Virtual Collection of Policy Settings
+* OU (Organization Unit) - Sub division
+
+Details:
+
+Nodes {nodes} Relationships {relationships}
+
+Model
+[subs=attributes]
+++++
+<img src="http:\\localhost\img\model.svg" class="img-responsive">
+++++
+Model
+
+=== Notes
+In this demonstration, we have used Neo4j APOC (Awesome Procedures on Cypher) and Neo4j GDS (Graph Data Science) libraries few Cypher queries.
+To execute the Cypher queries with APOC or GDS functions, you will need to add these libraries as plugins to your Neo4j database instance.
+
+For more details on APOC and GDS, please refer below links.
+
+* https://neo4j.com/developer/neo4j-apoc/[APOC^]
+* https://neo4j.com/docs/graph-data-science/current/[GDS^]
+
+== Prepare the graph
+We will first prepare the graph by preparing schema, loading nodes and relationships. 
+
+In order to load the graph data, you can use dump files available on Github repository of this example and follow data load process to load the graph. 
+
+* https://github.com/neo4j-graph-examples/graphs-for-cybersecurity/tree/main/data[Data Dump Files^]
+
+Alternatively, you can prepare schema, add constraints and use below Cypher query that uses APOC json load procedure to load json data.
+
+Prepare Schema
+
+[source,cypher]
+----
+CREATE CONSTRAINT group_name IF NOT EXISTS ON (g:Group) ASSERT g.name IS UNIQUE;
+CREATE CONSTRAINT domain_name IF NOT EXISTS ON (d:Domain) ASSERT d.name IS UNIQUE;
+CREATE CONSTRAINT group_object_id IF NOT EXISTS ON (g:Group) ASSERT (g.objectid) IS UNIQUE;
+CREATE CONSTRAINT ou_name IF NOT EXISTS ON (o:OU) ASSERT (o.name) IS UNIQUE;
+CREATE CONSTRAINT domain_object_id IF NOT EXISTS ON (d:Domain) ASSERT (d.objectid) IS UNIQUE;
+CREATE CONSTRAINT ou_object_id IF NOT EXISTS ON (o:OU) ASSERT (o.objectid) IS UNIQUE;
+CREATE CONSTRAINT user_name IF NOT EXISTS ON (u:User) ASSERT (u.name) IS UNIQUE;
+CREATE CONSTRAINT computer_objectid IF NOT EXISTS ON (c:Computer) ASSERT (c.objectid) IS UNIQUE;
+CREATE CONSTRAINT computer_name IF NOT EXISTS ON (c:Computer) ASSERT (c.name) IS UNIQUE;
+CREATE CONSTRAINT user_objectid IF NOT EXISTS ON (u:User) ASSERT (u.objectid) IS UNIQUE;
+CREATE CONSTRAINT gpo_name IF NOT EXISTS ON (g:GPO) ASSERT (g.name) IS UNIQUE;
+----
+
+Import json data
+[source,cypher]
+----
+CALL apoc.import.json("https://gist.githubusercontent.com/chintan196/ac8107e8545ef91738812099ee9f1acf/raw/da9ceff33e22dd25419c6707f6c8d84cc6552ab2/ad-data")
+----
+
+== Test data with simple queries
+We will test the graph with some simple queries to get network objects information.
+
+List active sessions in the network.
+[source,cypher]
+----
+// Get the path where there is an active session relationship present and show all objects from path
+MATCH p=()-[r:HAS_SESSION]->() RETURN p LIMIT 25
+----
+
+List all the machines where there are more than one active sessions running from different users.
+[source,cypher]
+----
+// Match computers and users which have active HAS_SESSION relationship
+MATCH (u)<-[:HAS_SESSION]-(c)
+// Condition of more than one active user sessions (u) per computer (c)
+WITH count(u) as sessionCount, c, collect(u.name) as users
+WHERE sessionCount > 1
+RETURN c.name, users
+----
+
+Return all high value assets (we call them crownJewels) from the Network, also list what all groups, users have direct access to these high value objects
+[source,cypher]
+----
+MATCH (o {highvalue:true})<--(a)
+WHERE a:User OR a:Group
+RETURN o, a
+----
+
+Groups those have write (WRITE_OWNER) access to the domain object? Also find what all users have generic all access (full rights) from these groups
+[source,cypher]
+----
+MATCH (d:Domain { name: 'TestCompany.Local' })<-[:WRITE_OWNER]-(g:Group) 
+MATCH (g)-[:GENERIC_ALL]->(u:User)
+RETURN d, g, u LIMIT 25
+----
+
+
+Get all users who have RDP access, and the computer where he/she has the access. 
+Some users have RDP access available through groups they are part of.
+[source,cypher]
+----
+CALL
+{
+// Get users who have direct RDP access to machines
+MATCH p=(:User)-[:CAN_RDP]->(:Computer) RETURN p
+UNION ALL
+// Users who got RDP access via groups they are member of
+MATCH p =(:User)-[:MEMBER_OF]->(:Group)-[:CAN_RDP]->(:Computer) RETURN p
+}
+// Return full paths
+RETURN p LIMIT 50
+----
+
+== Analyzing possible attack paths
+
+Cyber security nowadays is seeing a zero trust shift of network defense. This approach allows organization to restrict access controls to network, apps and environment without sacrificing performance and user experience. Zero trust approach trusts on one.
+Using Neo4j graph and its data science features, we can identify all possible threat paths (or attack paths) based on access. In a simple term, analyze any path that a user can take to reach to a high value resource in the network. Is this access (path) necessary? 
+
+Not necessary? These unwanted access paths can be revoked or controlled. 
+
+We are using the Dijkstra source target algorithm here.
+
+* https://neo4j.com/docs/graph-data-science/current/algorithms/dijkstra-source-target/[Dijkstra Source-Target^]
+
+=== Prepare Graph
+You can clear the attack paths data using below cypher
+[source,cypher]
+----
+// Build projection
+CALL gds.graph.create.cypher("attackPaths", 
+    "MATCH (n) RETURN id(n) AS id",
+    "MATCH (a)-[r]->(b) WHERE type(r) <> 'PATH' AND type(r) <> 'RAW_PATH' " +
+    "  AND type(r) <> 'PATH_0' RETURN id(a) AS source, id(b) AS target"
+);
+----
+
+=== Preview attack paths
+
+Here we generate all possibles path from normal objects to a high value object those might be exploited. 
+
+For example- What are possible paths from the user "PiedadFlatley255@TestCompany.Local" to the high value resources like Domain Controller and Domain Admin group?
+
+[source,cypher]
+----
+MATCH (u:User {name:'PiedadFlatley255@TestCompany.Local' })
+WITH u
+// Targetting a high value object (crown jewel)
+MATCH (crownJewel {highvalue:true})
+WITH u, id(crownJewel) AS crownJewelId
+// Get shortest paths from the user to the crown jewel object
+CALL gds.shortestPath.dijkstra.stream("attackPaths", {
+    sourceNode: id(u), 
+    targetNode: crownJewelId
+}) YIELD path
+RETURN path
+----
+
+Above preview query shows that the particular user in question can take numerous paths to reach Domain-Admin.
+
+Attack paths from a user to a high value asset
+[subs=attributes]
+++++
+<img src="http:\\localhost\img\attack-path-preview.svg" class="img-responsive">
+++++
+
+== Materializing attack paths data
+Like we saw for one user, what is the possible extent of this? We can check all the possible paths like this in whole network.
+[source,cypher]
+----
+// Targetting a high value object (crown jewel)
+MATCH (crownJewel {objectid:'S-1-5-21-883232822-274137685-4173207997-512'})
+WITH id(crownJewel) AS crownJewelId
+// Match all normal non-high value objects
+MATCH (n) WHERE n.highvalue IS NULL
+WITH id(n) AS sourceId, crownJewelId
+// Get shortest paths from all non high value objects to the crown jewel object
+CALL gds.shortestPath.dijkstra.stream("attackPaths", {
+    sourceNode: sourceId, 
+    targetNode: crownJewelId
+}) YIELD sourceNode, targetNode, nodeIds
+WITH nodeIds
+// Pair one-one nodes from the path between crown jewel and normal object
+UNWIND apoc.coll.pairsMin(gds.util.asNodes(nodeIds)) AS pair
+WITH pair[0] AS a, pair[1] AS b
+RETURN a.name, 'to', b.name LIMIT 10
+----
+
+In order to formalize this, for a possible risk mitigation,  we can materialize the attack paths by writing a relationship with name "ATTACK_PATH"
+[source,cypher]
+----
+// Targetting a high value object (crown jewel)
+MATCH (crownJewel {objectid:'S-1-5-21-883232822-274137685-4173207997-512'})
+WITH id(crownJewel) AS crownJewelId
+// Match all normal non-high value objects
+MATCH (n) WHERE n.highvalue IS NULL
+WITH id(n) AS sourceId, crownJewelId
+// Get shortest paths from all non high value objects to the crown jewel object
+CALL gds.shortestPath.dijkstra.stream("attackPaths", {
+    sourceNode: sourceId, 
+    targetNode: crownJewelId
+}) YIELD sourceNode, targetNode, nodeIds
+WITH nodeIds
+// Pair one-one nodes from the path between crown jewel and normal object
+UNWIND apoc.coll.pairsMin(gds.util.asNodes(nodeIds)) AS pair
+WITH pair[0] AS a, pair[1] AS b
+// Relationship -  path leading from a normal object to a high value object
+MERGE (a)-[r:ATTACK_PATH]->(b)
+RETURN count(r);
+----
+
+Check ATTACK_PATHS. 
+[source,cypher]
+----
+MATCH p=()-[r:ATTACK_PATH]->() RETURN p LIMIT 25
+----
+
+So we took every possible node in question, and we materialized a very specific link between them which repesents possible hops of attack paths.
+
+== Weights of nodes through the attack paths
+Now we are going to apply more analytics to the data that we generated. We are going to use the different ATTACK_PATH relationships, we are going to project them into analytics graph projection, run it through betweenness algorithm.
+
+Betweenness centrality is a way of detecting the amount of influence a node has over the flow of information in a graph. It is often used to find nodes that serve as a bridge from one part of a graph to another.
+
+We will assign betweenness score to nodes on ATTACK_PATH. This score can help us in determining who from the nodes are heavy headers in attack paths.
+
+* https://neo4j.com/docs/graph-data-science/current/algorithms/betweenness-centrality/[Betweenness Centrality^]
+
+First, we will create a in-memory graph projection for this.
+[source,cypher]
+----
+CALL gds.graph.create('betweennessGraph', 'Base', 'ATTACK_PATH')
+----
+
+Second, we will estimate the memory usage for running this procedure on our projected data (nodes and relationships involved). 
+[source,cypher]
+----
+CALL gds.betweenness.write.estimate('betweennessGraph', { writeProperty: 'betweenness' })
+YIELD nodeCount, relationshipCount, bytesMin, bytesMax, requiredMemory
+----
+
+Third, we can run this procedure and stream results to see the weightage (betweenness score)
+[source,cypher]
+----
+CALL gds.betweenness.stream('betweennessGraph')
+YIELD nodeId, score
+WITH gds.util.asNode(nodeId) AS n, score
+RETURN n.name, collect(labels(n)), score order by score desc limit 100
+----
+
+Fourth, we can materialize this weights data by writing them as properties on respective nodes. So we can perform some more analysis.
+[source,cypher]
+----
+CALL gds.betweenness.write('betweennessGraph', { writeProperty: 'betweenness' })
+YIELD centralityDistribution, nodePropertiesWritten
+----
+
+Finally, check users and groups which have much higher weights
+[source,cypher]
+----
+MATCH (a)-[r:ATTACK_PATH]->(b)
+WHERE a:User OR a:Group
+RETURN a.name, labels(a), a.objectid, a.betweenness 
+ORDER BY a.betweenness DESCENDING LIMIT 25
+----
+
+You can also visualize the attack paths and heavy weighed nodes in Neo4j Bloom to have some visual analytics over this data.
+
+== Clear attack paths
+You can clear the attack paths and projection data using below cypher
+[source,cypher]
+----
+// Drop graphs
+CALL gds.graph.list() YIELD graphName
+CALL gds.graph.drop(graphName) YIELD graphName AS dropped
+RETURN count(*);
+
+// Drop attack paths
+MATCH ()-[r:ATTACK_PATH]->() DELETE r;
+----
+
+== Next steps
+=== Full Source Code Available on GitHub
+
+* https://github.com/neo4j-graph-examples/graphs-for-cybersecurity[Source Code with Cypher and data dumps^]
+
+* https://github.com/neo4j-graph-examples/[Other Example Datasets^]
+
+=== Demo video for this use case
+This use case was presented on 31 Mar, 2021.
+
+* https://www.youtube.com/watch?v=2O2JfqeHJR4[Demo Link^]
+
+=== More code
+
+* pass:a[<a play-topic="movie-graph">Movie Graph</a> - actors & movies]
+* pass:a[<a play-topic="cypher">Cypher</a> - query language fundamentals]
+
+=== References
+
+* https://github.com/BloodHoundAD/BloodHound[BloodHound^]
+* https://ernw.de/download/BloodHoundWorkshop/ERNW_DogWhispererHandbook.pdf[Handbook PDF^]
+* https://en.wikipedia.org/wiki/Computer_security[Cyber Security- Wikipedia^]
+* https://neo4j.com/docs/bloom-user-guide/current/bloom-perspectives/[Neo4j Bloom Persectives^]
+* https://neo4j.com/press-releases/neo4j-for-cybersecurity/[Neo4j for Cyber Security^]
+* https://cybersecurityventures.com/hackerpocalypse-cybercrime-report-2016/[Hackerpocalypse Cybercrime Report-2016^]
+* https://www.accenture.com/_acnmedia/pdf-96/accenture-2019-cost-of-cybercrime-study-final.pdf[Cost of Cybercrime Study^]
+* https://www.gartner.com/en/documents/3889055/forecast-analysis-information-security-worldwide-2q18-up[Forecast Analysis: Information Security, Worldwide^]
+* https://github.com/voutilad/BloodHound-Tools/tree/update-to-neo4j4[BloodHound Datacreator Library^]

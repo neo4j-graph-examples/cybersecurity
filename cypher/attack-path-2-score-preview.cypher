@@ -1,8 +1,10 @@
 // Attack Path 2 - Score Preview
-CALL gds.betweenness.stream({
-    nodeQuery: "MATCH (a)-[:ATTACK_PATH]-() RETURN DISTINCT id(a) AS id",
-    relationshipQuery: "MATCH (a)-[:ATTACK_PATH]->(b) RETURN id(a) AS source, id(b) AS target"
-}) YIELD nodeId, score
-WITH gds.util.asNode(nodeId) AS n, score
+CALL gds.graph.create('betweennessGraph', 'Base', 'ATTACK_PATH')
 
-RETURN n.name, head(labels(n)), score order by score desc limit 100
+CALL gds.betweenness.write.estimate('betweennessGraph', { writeProperty: 'betweenness' })
+YIELD nodeCount, relationshipCount, bytesMin, bytesMax, requiredMemory
+
+CALL gds.betweenness.stream('betweennessGraph')
+YIELD nodeId, score
+WITH gds.util.asNode(nodeId) AS n, score
+RETURN n.name, collect(labels(n)), score order by score desc limit 100

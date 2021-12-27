@@ -4,10 +4,10 @@ CALL gds.nodeSimilarity.stream({
     nodeQuery: 'MATCH (n) WHERE n:User OR n:Computer RETURN id(n) AS id',
     relationshipQuery: '
         CALL {
-            MATCH (u:User)-[:MemberOf*1..]->(:Group)-[:CanRDP]->(c:Computer)
+            MATCH (u:User)-[:MEMBER_OF*1..]->(:Group)-[:CAN_RDP]->(c:Computer)
             RETURN u, c
             UNION
-            MATCH (u:User)-[:CanRDP]->(c:Computer)
+            MATCH (u:User)-[:CAN_RDP]->(c:Computer)
             RETURN u, c
         }
         RETURN id(u) AS source, id(c) AS target

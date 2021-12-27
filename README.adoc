@@ -6,70 +6,80 @@
 :tags: Cybersecurity, ITSecurity, ActiveDirectory, Auditing, Attack Paths Analysis, AD Management
 :author: Neo4j
 :demodb: true
-:data: false
+:data: true
 :use-load-script: false
-:use-dump-file: data/cybersecurity-database-44.dump
+:use-dump-file: data/cyber-security-ad-44.dump
 :zip-file: false
-:use-plugin: false
+:use-plugin: apoc, graph-data-science
 :target-db-version: 4.4
 :bloom-perspective: bloom/Windows_Domains.json,bloom/Attack_Path_Analysis.json
 :guide: documentation/graphs-for-cybersecurity.adoc
 :model: documentation/img/model.svg
-:data-load-image2: images/2-import-dump-or-create-new-dbms.png
-:data-load-image3: images/3-create-new-graph-dbms.png
+:example: documentation/img/example.svg
+:data-load-image1: documentation/img/1-load-file.png
+:data-load-image2: documentation/img/2-import-dump-or-create-new-dbms.png
+:data-load-image3: documentation/img/3-create-new-graph-dbms.png
 :attack-image: bloom.gif
 :rendered-guide: https://guides.neo4j.com/sandbox/{name}/index.html
 :cypher: cypher
 :slides: documentation/Cybersecurity_Connections-2021.pdf
-:nodes: 1555
-:relationships: 8395
+:nodes: 953
+:relationships: 4890
 ++++
 <br>
 ++++
+
+== {long-name} Graph Example
+
+Description: _{description}_
+
+Nodes {nodes} Relationships {relationships}
+
+.Model
+image::{model}[width=750]
+
+.Example
+image::{example}[width=750]
 
 Demo as presented on 31 Mar, 2021.
 
 * https://youtu.be/2O2JfqeHJR4[Demo Link]
 
 .Bloom
-image::{attack-image}[]
+image::{attack-image}[width=750]
 
-++++
-<br>
-++++
+.Example Query:
+[source,cypher,role=query-example,param-name=name,param-value="HilaryOlivia226@TestCompany.Local",result-column=computer,expected-result="xxx"]
+----
+MATCH (u:User {name: 'HilaryOlivia226@TestCompany.Local'})-[:CAN_RDP]->(r) RETURN r.name as computer
+----
 
-=== Background
-Computer security, cybersecurity, or information technology security (IT security) is the protection of computer systems and networks from information disclosure, theft of or damage to their hardware, software, or electronic data, as well as from the disruption or misdirection of the services they provide.
+=== Setup
 
-The field is becoming increasingly significant due to the continuously expanding reliance on computer systems, the Internet and wireless network standards such as Bluetooth and Wi-Fi, and due to the growth of "smart" devices, including smartphones, televisions, and the various devices that constitute the "Internet of things". Cybersecurity is also one of the significant challenges in the contemporary world, due to its complexity, both in terms of political usage and technology.
+This is for Neo4j version: {target-db-version}
 
-Losses attributed to cybercrime are expected to reach $10.5 trillion by 2025*, growing at a rate of 15 percent annually. Costs include damage and destruction of data, stolen money, theft of intellectual property, personal and financial data, investigation, restoration, and more. While the digital economy is flourishing, [68 percent] of business leaders recognize their cybersecurity risks are also increasing, urging many to invest in the right tools. Gartner predicts the global information security market will reach a staggering $170.4 billion USD by 2022*.
+ifeval::[{use-plugin} != false]
 
-Graph database can help in implementing an effective solution in the field of Cyber Security.
+Required plugins: {use-plugin}
 
-This demo is based on the data and themes from the BloodHound project. Bloodhound is a great tool for auditing your active directory environment, finding attack paths through Windows AD Infrastructure. It uses Neo4j Graph Database. We recommend looking into BloodHound or reading the very comprehensive handbook on it to learn more about Active Directory attack paths and auditing techniques.
-
-* https://github.com/BloodHoundAD/BloodHound[BloodHound]
-* https://ernw.de/download/BloodHoundWorkshop/ERNW_DogWhispererHandbook.pdf[BloodHound Handbook]
-
-=== Prerequisites
-
-Install the following:
-
-* https://neo4j.com/download/[Neo4j 4.4.x]
 * https://neo4j.com/docs/graph-data-science/current/[Neo4j Graph Data Science Library for Neo4j 4.4.X]
-* https://neo4j.com/product/bloom/[Neo4j Bloom]
 * https://neo4j.com/developer/neo4j-apoc/[APOC for Neo4j v4.4.X]
+
+endif::[]
+
+ifeval::[{demodb} != false]
+The database is also available on https://demo.neo4jlabs.com:7473
+
+Username "{name}", password: "{name}", database: "{name}"
+endif::[]
+
+Rendered guide available via: `:play {rendered-guide}`
+
+Load graph data via the following:
 
 In this demo, the BloodHound Tools project was used to populate a fictitious Active Directory graph in Neo4j.
 
-* https://github.com/voutilad/BloodHound-Tools/tree/update-to-neo4j4[Bloodhound Tools - DBCreator]
-
-We have created a ready-made dump file that can be loaded before you walk through queries using the browser guide.
-
-== Populating the Graph
-
-Load graph data via the following:
+We have created ready-made dump file and json data files. You can load data with any of these methods.
 
 ifeval::[{data} != false]
 ==== Data files: `{data}`
@@ -78,69 +88,36 @@ Import flat files (csv, json, etc) using Cypher's https://neo4j.com/docs/cypher-
 endif::[]
 
 ifeval::[{use-dump-file} != false]
-==== Dump file: link:{use-dump-file}[]
+==== Dump file: `link:{use-dump-file}[]`
 
-* Drop the file into the `Files` section of a project in Neo4j Desktop. Then choose the option to `Create new DBMS from dump` option from the file options three dots button.
+* Drop the file into the `Files` section of a project in Neo4j Desktop. Then choose the option to `Create new DBMS from dump` option from the file options.
 
-.Load file and Import Dump to Create New Dbms
-image::{data-load-image2}[]
-++++
-<br>
-++++
-.Create New DBMS
-image::{data-load-image3}[]
+* Use the neo4j-admin tool to load data from the command line with the command below.
 
-* Alternatively, for locally hosted database, you can use the neo4j-admin tool to load data from the command line with the command below.
-
-[source,cypher]
+[source,shell,subs=attributes]
 ----
-bin/neo4j-admin load --from {use-dump-file} --database "[database name]"
+bin/neo4j-admin load --from {use-dump-file} [--database "database"]
 ----
 
-* For Aura Instance - Upload the dump file to Neo4j Aura via https://console.neo4j.io/#import-instructions
+* Upload the dump file to Neo4j Aura via https://console.neo4j.io/#import-instructions
 endif::[]
 
-=== The GDS Cypher
+ifeval::[{use-load-script} != false]
+==== Data load script: `{use-load-script}`
 
-==== Initialize: I've provided the GDS cypher queries in link:{cypher}[]. However, the one you should keep handy is the one to "reset" or initialize the system.
-
-[source,cypher]
+[source,shell,subs=attributes]
 ----
-// Attack Path - Prep
-// Drop graphs
-CALL gds.graph.list() YIELD graphName
-CALL gds.graph.drop(graphName) YIELD graphName AS dropped
-RETURN count(*);
-
-// Drop attack paths
-MATCH ()-[r:ATTACK_PATH]->() DELETE r;
-
-// Rebuild projection
-CALL gds.graph.create.cypher("attackPaths", 
-    "MATCH (n) RETURN id(n) AS id",
-    "MATCH (a)-[r]->(b) WHERE type(r) <> 'PATH' AND type(r) <> 'RAW_PATH' " +
-    "  AND type(r) <> 'PATH_0' RETURN id(a) AS source, id(b) AS target"
-);
+bin/cypher-shell -u neo4j -p "password" -f {use-load-script} [-d "database"]
 ----
 
-== Browser Guide
+Or import in Neo4j Browser by dragging or pasting the content of {use-load-script}.
+endif::[]
 
-Rendered guide available via: `:play {rendered-guide}`
+ifeval::[{zip-file} != false]
+==== Zip file
 
-Unrendered guide: link:{guide}[]
-
-== Installing the Bloom Perspectives
-
-The provided Bloom perspectives (in link:{bloom-perspective}) can be imported very easily. Make sure to import them both.
-
-* https://neo4j.com/docs/bloom-user-guide/current/bloom-perspectives/[Importing a bloom perspective]
-
-They contain all the cypher statements used by Bloom, so unless you want to try the GDS queries, you're good to explore the graph!
-
-Make sure that you run the initialization cypher mentioned in the previous section first!
-
-Keep in mind that if you generate your own data, you may need to tweak the
-user accounts used for the queries.
+Download the zip file link:{repo}/raw/master/{name}.zip[{name}.zip] and add it as "project from file" to https://neo4j.com/developer/neo4j-desktop[Neo4j Desktop^].
+endif::[]
 
 == Presentation Materials
 
@@ -150,10 +127,17 @@ More of a video person? The use case recording is available on YouTube.
 
 * https://youtu.be/2O2JfqeHJR4[Recording Link]
 
+=== Feedback
+
+Feel free to submit issues or pull requests for improvement on this repository.
+
+
 == References
 * https://github.com/BloodHoundAD/BloodHound[BloodHound]
 
 * https://ernw.de/download/BloodHoundWorkshop/ERNW_DogWhispererHandbook.pdf[Handbook PDF]
+
+* https://github.com/voutilad/BloodHound-Tools/tree/update-to-neo4j4[Bloodhound Tools - DBCreator]
 
 * https://en.wikipedia.org/wiki/Computer_security[Cyber Security]
 
