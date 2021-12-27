@@ -83,7 +83,7 @@ We have created ready-made dump file and json data files. You can load data with
 ifeval::[{data} != false]
 ==== Data files: `{data}`
 
-Import flat files (csv, json, etc) using Cypher's https://neo4j.com/docs/cypher-manual/current/clauses/load-csv/[`LOAD CSV`], https://neo4j.com/labs/apoc/4.1/import/load-json/[`LOAD JSON`], https://neo4j.com/labs/apoc/[APOC library], or https://neo4j.com/developer/data-import/[other methods].
+Import flat files (csv, json, etc) using Cypher's https://neo4j.com/docs/cypher-manual/current/clauses/load-csv/[`LOAD CSV`], https://neo4j.com/labs/apoc/4.1/import/load-json/[LOAD JSON], https://neo4j.com/labs/apoc/[APOC library], or https://neo4j.com/developer/data-import/[other methods].
 endif::[]
 
 ifeval::[{use-dump-file} != false]
