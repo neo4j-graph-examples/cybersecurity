@@ -74,6 +74,8 @@ endif::[]
 
 Rendered guide available via: `:play {rendered-guide}`
 
+Unrendered guide: link:{guide}[]
+
 Load graph data via the following:
 
 In this demo, the BloodHound Tools project was used to populate a fictitious Active Directory graph in Neo4j.
