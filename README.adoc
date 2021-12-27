@@ -40,12 +40,10 @@ image::{model}[width=750]
 .Example
 image::{example}[width=750]
 
-Demo as presented on 31 Mar, 2021.
-
-* https://youtu.be/2O2JfqeHJR4[Demo Link]
-
 .Bloom
 image::{attack-image}[width=750]
+
+
 
 .Example Query:
 [source,cypher,role=query-example,param-name=name,param-value="HilaryOlivia226@TestCompany.Local",result-column=computer,expected-result="xxx"]
