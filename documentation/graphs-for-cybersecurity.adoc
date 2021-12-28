@@ -25,7 +25,7 @@ Graph database can help in implementing an effective solution in the field of Cy
 There is a quote from John Lambert, Engineer from Microsoft Threat Intelligence Center,
 "Defenders think in lists. Attackers think in graphs. As long as this is true, attackers win."
 
-Our networks are connected graphs. We can use a graph database based solution to have a holistic view of enterprise netrowk. 
+Our networks are connected graphs. We can use a graph database based solution to have a holistic view of enterprise network. 
 This helps us quickly identify risks, detecting anomalies and protecting our systems and crown jewels with confidence to minimize impacts.
 
 == Demo Use-case
