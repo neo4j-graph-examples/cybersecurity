@@ -30,7 +30,7 @@ This demo is based on the data and themes from the BloodHound project. Bloodhoun
 
 We have conceptualized BloodHound example to prepare a fictitious Active Directory environment and showed some useful analysis.
 
-Active directory helps IT teams monitor various network resources and users. It allows to grand and revoke different user permissions.  Active Directory comprises of objects. We have considered below sample objects for this use cases.
+Active directory helps IT teams monitor various network resources and users. It allows to grant and revoke different user permissions.  Active Directory comprises of objects. We have considered below sample objects for this use cases.
 
 * User
 * Computer
