@@ -93,7 +93,7 @@
 <p>We have conceptualized BloodHound example to prepare a fictitious Active Directory environment and showed some useful analysis.</p>
 </div>
 <div class="paragraph">
-<p>Active directory helps IT teams monitor various network resources and users. It allows to grand and revoke different user permissions.  Active Directory comprises of objects. We have considered below sample objects for this use cases.</p>
+<p>Active directory helps IT teams monitor various network resources and users. It allows to grant and revoke different user permissions.  Active Directory comprises of various objects. We have considered below sample objects for this use cases.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -123,12 +123,11 @@
 <div class="paragraph">
 <p>Nodes 953 Relationships 4890</p>
 </div>
-<div class="paragraph">
-<p>Model</p>
+<div class="imageblock">
+<div class="content">
+<img src="http://guides.neo4j.com/intro/img/model.svg" alt="model">
 </div>
-<img src="http:\\localhost\img\model.svg" class="img-responsive">
-<div class="paragraph">
-<p>Model</p>
+<div class="title">Figure 1. Model</div>
 </div>
 
 
@@ -261,8 +260,8 @@ RETURN d, g, u LIMIT 25<!--/code--></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Get all users who have RDP access, and the computer where he/she has the access.
-Some users have RDP access available through groups they are part of.</p>
+<p>Get all users who have RDP access, and the computer where they the access.
+Some Users have RDP access for self, some users have RDP access available through groups they are part of (inherited).</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -311,7 +310,7 @@ Using Neo4j graph and its data science features, we can identify all possible th
 
    <h4>Prepare Graph</h4>
    <div class="paragraph">
-<p>You can clear the attack paths data using below cypher</p>
+<p>Below cypher will prepare an in memory graph projection for our analysis.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -349,12 +348,14 @@ RETURN path<!--/code--></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Above preview query shows that the particular user in question can take numerous paths to reach Domain-Admin.</p>
+<p>Above preview query shows that the particular user in question can take numerous paths to reach Domain-Admin or Domain-Controller.</p>
 </div>
-<div class="paragraph">
-<p>Attack paths from a user to a high value asset</p>
+<div class="imageblock">
+<div class="content">
+<img src="http://guides.neo4j.com/intro/img/attack-path-preview.svg" alt="attack path preview">
 </div>
-<img src="http:\\localhost\img\attack-path-preview.svg" class="img-responsive">
+<div class="title">Figure 2. Attack paths from a user to a high value asset</div>
+</div>
 	</div>
   </div>
 </slide>
