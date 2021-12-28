@@ -185,7 +185,7 @@ CALL gds.shortestPath.dijkstra.stream("attackPaths", {
 RETURN path
 ----
 
-Above preview query shows that the particular user in question can take numerous paths to reach Domain-Admin.
+Above preview query shows that the particular user in question can take numerous paths to reach Domain-Admin or Domain-Controller.
 
 .Attack paths from a user to a high value asset
 image::{img}/{attack-path}[]
