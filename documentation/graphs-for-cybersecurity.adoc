@@ -153,7 +153,7 @@ We are using the Dijkstra source target algorithm here.
 * https://neo4j.com/docs/graph-data-science/current/algorithms/dijkstra-source-target/[Dijkstra Source-Target^]
 
 === Prepare Graph
-You can clear the attack paths data using below cypher
+Below cypher will prepare an in memory graph projection for our analysis.
 [source,cypher]
 ----
 // Build projection
