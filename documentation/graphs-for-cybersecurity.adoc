@@ -125,8 +125,8 @@ RETURN d, g, u LIMIT 25
 ----
 
 
-Get all users who have RDP access, and the computer where he/she has the access. 
-Some users have RDP access available through groups they are part of.
+Get all users who have RDP access, and the computer where they the access. 
+Some Users have RDP access for self, some users have RDP access available through groups they are part of (inherited).
 [source,cypher]
 ----
 CALL
