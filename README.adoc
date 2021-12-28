@@ -19,7 +19,7 @@
 :data-load-image2: documentation/img/2-import-dump-or-create-new-dbms.png
 :data-load-image3: documentation/img/3-create-new-graph-dbms.png
 :attack-image: bloom.gif
-:rendered-guide: https://guides.neo4j.com/sandbox/{name}/index.html
+:rendered-guide: https://guides.neo4j.com/sandbox/{name}
 :cypher: cypher
 :slides: documentation/Cybersecurity_Connections-2021.pdf
 :nodes: 953
