@@ -199,8 +199,8 @@ WITH u
 
 // Match a high value object (we call it "crown jewel")
 MATCH (crownJewel {highvalue:true})
-
 WITH u, id(crownJewel) AS crownJewelId
+
 // Get shortest paths from user to the crown jewel object
 CALL gds.shortestPath.dijkstra.stream("attackPaths", {
     sourceNode: id(u), 
