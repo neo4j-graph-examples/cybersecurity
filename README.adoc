@@ -28,7 +28,7 @@
 <br>
 ++++
 
-== {long-name} Graph Example
+== {long-name}
 
 Description: _{description}_
 
