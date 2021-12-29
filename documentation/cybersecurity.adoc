@@ -157,8 +157,9 @@ RETURN p LIMIT 50
 == Analyzing possible attack paths
 
 Cyber security nowadays is seeing a zero trust shift of network defense. This approach allows organization to restrict access controls to network, apps and environment without sacrificing performance and user experience. Zero trust approach trusts on one.
-Using Neo4j graph and its data science features, we can identify all possible threat paths (or attack paths) based on access. In a simple term, analyze any path that a user can take to reach to a high value resource in the network. Is this access (path) necessary? 
+Using Neo4j graph and its data science features, we can identify all possible threat paths (or attack paths) based on access. 
 
+In a simple term, analyze any path that a user can take to reach to a high value resource in the network. Check, is this access (path) necessary? 
 Not necessary? These unwanted access paths can be revoked or controlled. 
 
 We are using the Dijkstra source target algorithm here.
