@@ -366,7 +366,7 @@ ORDER BY a.betweenness DESCENDING LIMIT 25
 We can also visualize the attack paths and heavy weighed nodes in Neo4j Bloom to have some visual analytics over this data.
 
 == Clear attack paths
-You can clear the attack paths and projection data using below cypher
+Clear the attack paths and projection data using below cypher
 [source,cypher]
 ----
 // Drop graphs
