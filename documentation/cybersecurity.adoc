@@ -242,7 +242,7 @@ RETURN path
 .Attack paths from a user to a high value asset
 image::{img}/{user-attack-path}[]
 
-So now we see that the user "Piedad Flatley" is a member of "Domain Admins" group which is an admin for computer "FLLABDC@TestCompany.Loca". And this computer is a member of "ENTERPRISE DOMAIN CONTROLLERS" group.
+So now we see that the user "Piedad Flatley" is a member of "Domain Admins" group which is an admin for computer "FLLABDC@TestCompany.Local". And this computer is a member of "ENTERPRISE DOMAIN CONTROLLERS" group.
 
 This is how we can picturize the possible impact paths and mitigate risk to avoid unexpected threats.
 
