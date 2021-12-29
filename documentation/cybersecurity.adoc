@@ -39,7 +39,7 @@ We have conceptualized BloodHound example to prepare a fictitious Active Directo
 
 Active directory helps IT teams monitor various network resources and users. It allows to grant and revoke different user permissions.
 
-Active Directory comprises of various objects. We have considered below sample objects for this use cases.
+Active Directory comprises of various objects. We have considered below sample objects for this use case.
 
 * User
 * Computer
@@ -56,7 +56,7 @@ Nodes {nodes} Relationships {relationships}
 image::{img}/{model}[]
 
 === Notes
-In this demonstration, we have used Neo4j APOC (Awesome Procedures on Cypher) and Neo4j GDS (Graph Data Science) libraries few Cypher queries.
+In this demonstration, we have used Neo4j APOC (Awesome Procedures on Cypher) and Neo4j GDS (Graph Data Science) libraries for a few Cypher queries.
 To execute the Cypher queries with APOC or GDS functions, you will need to add these libraries as plugins to your Neo4j database instance.
 
 For more details on APOC and GDS, please refer below links.
