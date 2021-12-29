@@ -132,7 +132,7 @@ This helps us quickly identify risks, detecting anomalies and protecting our sys
 <p>Details:</p>
 </div>
 <div class="paragraph">
-<p>Nodes 953 Relationships 4890</p>
+<p>Nodes 953 Relationships 4858</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -211,7 +211,7 @@ CREATE CONSTRAINT gpo_name IF NOT EXISTS ON (g:GPO) ASSERT (g.name) IS UNIQUE;<!
 </div>
 <div class="listingblock">
 <div class="content">
-<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->CALL apoc.import.json("https://gist.githubusercontent.com/chintan196/ac8107e8545ef91738812099ee9f1acf/raw/da9ceff33e22dd25419c6707f6c8d84cc6552ab2/ad-data")<!--/code--></pre>
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->CALL apoc.import.json("https://gist.githubusercontent.com/chintan196/ac8107e8545ef91738812099ee9f1acf/raw/cd04ba54bf07b1065b5c30e25b90a68da2c76700/ad-data")<!--/code--></pre>
 </div>
 </div>
 	</div>
@@ -281,8 +281,8 @@ Some Users have RDP access for self, some users have RDP access available throug
 // Get users who have direct RDP access to machines
 MATCH p=(:User)-[:CAN_RDP]-&gt;(:Computer) RETURN p
 UNION ALL
-// Users who got RDP access via groups they are member of
-MATCH p =(:User)-[:MEMBER_OF]-&gt;(:Group)-[:CAN_RDP]-&gt;(:Computer) RETURN p
+// Users who got RDP access via groups they are member of, this will check relationship levels upto 2 levels
+MATCH p =(:User)-[:MEMBER_OF]-&gt;(:Group)-[:MEMBER_OF*0..2]-&gt;(:Group)-[:CAN_RDP]-&gt;(:Computer) RETURN p
 }
 // Return full paths
 RETURN p LIMIT 50<!--/code--></pre>
@@ -445,11 +445,11 @@ RETURN count(r);<!--/code--></pre>
 
 <slide class="row-fluid">
   <div class="col-sm-12">
-    <h3>Weights of nodes through the attack paths</h3>
+    <h3>More queries: Weights of nodes through the attack paths</h3>
     <br/>
     <div>
       <div class="paragraph">
-<p>Now we are going to apply more analytics to the data that we generated. We are going to use the different ATTACK_PATH relationships, we are going to project them into analytics graph projection, run it through betweenness algorithm.</p>
+<p>We can apply more analytics to the data that we generated. We are going to use the different ATTACK_PATH relationships, we are going to project them into analytics graph projection, run it through betweenness algorithm.</p>
 </div>
 <div class="paragraph">
 <p>Betweenness centrality is a way of detecting the amount of influence a node has over the flow of information in a graph. It is often used to find nodes that serve as a bridge from one part of a graph to another.</p>
@@ -469,7 +469,7 @@ RETURN count(r);<!--/code--></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->CALL gds.graph.create('betweennessGraph', 'Base', 'ATTACK_PATH')<!--/code--></pre>
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->CALL gds.graph.create('betweennessGraph', ['User', 'Group','Computer', 'Domain', 'GPO', 'OU'], 'ATTACK_PATH')<!--/code--></pre>
 </div>
 </div>
 <div class="paragraph">

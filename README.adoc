@@ -1,4 +1,4 @@
-:name: graphs-for-cybersecurity
+:name: cybersecurity
 :long-name: Neo4j Connections: Graphs for Cybersecurity
 :description: Cybersecurity, Active Directory environment auditing and analysis of possible attack paths using graph
 :icon: font
@@ -12,7 +12,7 @@
 :use-plugin: apoc, graph-data-science
 :target-db-version: 4.4
 :bloom-perspective: bloom/Windows_Domains.json,bloom/Attack_Path_Analysis.json
-:guide: documentation/graphs-for-cybersecurity.adoc
+:guide: documentation/cybersecurity.adoc
 :model: documentation/img/model.svg
 :example: documentation/img/example.svg
 :data-load-image1: documentation/img/1-load-file.png

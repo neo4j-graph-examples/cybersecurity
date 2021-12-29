@@ -1,5 +1,5 @@
 == Neo4j Connections: Graphs for Cybersecurity
-:name: graphs-for-cybersecurity
+:name: cybersecurity
 :long-name: Neo4j Connections: Graphs for Cybersecurity
 :description: Cybersecurity, Active Directory environment auditing and analysis of possible attack paths using graph
 :icon: font
