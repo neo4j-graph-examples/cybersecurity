@@ -8,7 +8,7 @@
 :model: model.svg
 :example: example.svg
 :attack-path: attack-path-preview.svg
-:attack-path: user-attack-path.svg
+:user-attack-path: user-attack-path.svg
 :dump: https://github.com/neo4j-graph-examples/entity-resolution/tree/main/data
 :nodes: 953
 :relationships: 4858
