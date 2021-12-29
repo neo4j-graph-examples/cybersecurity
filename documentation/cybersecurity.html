@@ -244,6 +244,7 @@ MATCH p=()-[r:HAS_SESSION]-&gt;() RETURN p LIMIT 25<!--/code--></pre>
 <div class="content">
 <pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->// Match computers and users which have active HAS_SESSION relationship
 MATCH (u)&lt;-[:HAS_SESSION]-(c)
+
 // Condition of more than one active user sessions (u) per computer (c)
 WITH count(u) as sessionCount, c, collect(u.name) as users
 WHERE sessionCount &gt; 1
@@ -280,10 +281,13 @@ Some Users have RDP access for self, some users have RDP access available throug
 {
 // Get users who have direct RDP access to machines
 MATCH p=(:User)-[:CAN_RDP]-&gt;(:Computer) RETURN p
+
 UNION ALL
-// Users who got RDP access via groups they are member of, this will check relationship levels upto 2 levels
+
+// Users who got RDP access via groups (or group hierarchy) they are member of, this will check relationship levels upto 2 levels
 MATCH p =(:User)-[:MEMBER_OF]-&gt;(:Group)-[:MEMBER_OF*0..2]-&gt;(:Group)-[:CAN_RDP]-&gt;(:Computer) RETURN p
 }
+
 // Return full paths
 RETURN p LIMIT 50<!--/code--></pre>
 </div>
@@ -322,16 +326,20 @@ Using Neo4j graph and its data science features, we can identify all possible th
    <h4>Prepare Graph</h4>
    <div class="paragraph">
 <p>Below cypher will prepare an in memory graph projection for our analysis.
-Using gds.graph.create.cypher method, we will create a graph projection using cypher query for both node and relationship specification.
-For finding attack paths, we have to cover all the nodes and relationships to be included for GDS procedures.
-So instead of specifying all node labels and relationship types to create graph, we specify cypher queries to include all.</p>
+Using "gds.graph.create.cypher" method, we will create a graph projection using cypher query.
+For finding attack paths, we have to include all nodes and relationships GDS analysis.
+So instead of explicitly specifying all node labels and relationship types, we have a provision to specify cypher queries which produde all nodes and relationships.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->// Build projection
 CALL gds.graph.create.cypher("attackPaths",
-    "MATCH (n) RETURN id(n) AS id",
-    "MATCH (a)-[r]-&gt;(b) RETURN id(a) AS source, id(b) AS target"
+
+// Include all node labels
+"MATCH (n) RETURN id(n) AS id",
+
+// Include all relationship types
+"MATCH (a)-[r]-&gt;(b) RETURN id(a) AS source, id(b) AS target"
 );<!--/code--></pre>
 </div>
 </div>
@@ -340,7 +348,7 @@ CALL gds.graph.create.cypher("attackPaths",
 
    <h4>Preview attack paths</h4>
    <div class="paragraph">
-<p>Now we try to figure out the possible attack paths. For this, we take a user in question and check what all high value objects (or crown jewels) this user can reach directly or indirectly?</p>
+<p>Now we try to figure out all possible attack paths. For this, let us take one particular user and check what all high value objects (or crown jewels) this user can reach directly or indirectly?</p>
 </div>
 <div class="paragraph">
 <p>All these paths can be termed as possible attack paths.</p>
@@ -352,10 +360,13 @@ CALL gds.graph.create.cypher("attackPaths",
 <div class="content">
 <pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->MATCH (u:User {name:'PiedadFlatley255@TestCompany.Local' })
 WITH u
-// Targetting a high value object (we call it with name "crown jewel")
+// Match a high value object (we call it "crown jewel")
+
 MATCH (crownJewel {highvalue:true})
+
 WITH u, id(crownJewel) AS crownJewelId
-// Get shortest paths from the user to the crown jewel object
+
+// Get shortest paths from user to the crown jewel object
 CALL gds.shortestPath.dijkstra.stream("attackPaths", {
     sourceNode: id(u),
     targetNode: crownJewelId
@@ -367,16 +378,14 @@ RETURN count(path)<!--/code--></pre>
 <p>Above cypher produces that the user can reach out upto 4 high value assets either directly or indirectly.</p>
 </div>
 <div class="paragraph">
-<p>Now, lets check what are those assets and what are those possible attack paths?</p>
+<p>Now, lets check what are these high value assets and what are these possible attack paths?</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->MATCH (u:User {name:'PiedadFlatley255@TestCompany.Local' })
 WITH u
-// Targetting a high value object (we call it with name "crown jewel")
 MATCH (crownJewel {highvalue:true})
 WITH u, id(crownJewel) AS crownJewelId
-// Get shortest paths from the user to the crown jewel object
 CALL gds.shortestPath.dijkstra.stream("attackPaths", {
     sourceNode: id(u),
     targetNode: crownJewelId
@@ -394,16 +403,16 @@ RETURN path<!--/code--></pre>
 <div class="title">Figure 2. Attack paths from a user to a high value asset</div>
 </div>
 <div class="paragraph">
-<p>Now, lets check how "Piedad Flatley" can reach upto ENTERPRISE DOMAIN CONTROLLERS group?</p>
+<p>Now, let us take a close look at one attack path. Check - How "Piedad Flatley" can reach upto ENTERPRISE DOMAIN CONTROLLERS group?</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->MATCH (u:User {name:'PiedadFlatley255@TestCompany.Local' })
 WITH u
-// Targetting a high value object (we call it with name "crown jewel")
-MATCH (crownJewel {highvalue:true, objectid: "TestCompany.Local-S-1-5-9"})
+
+// Match on object id of the ENTERPRISE DOMAIN CONTROLLERS Group
+MATCH (crownJewel :Group{highvalue:true, objectid: "TestCompany.Local-S-1-5-9"})
 WITH u, id(crownJewel) AS crownJewelId
-// Get shortest paths from the user to the crown jewel object
 CALL gds.shortestPath.dijkstra.stream("attackPaths", {
     sourceNode: id(u),
     targetNode: crownJewelId
@@ -418,7 +427,7 @@ RETURN path<!--/code--></pre>
 <div class="title">Figure 3. Attack paths from a user to a high value asset</div>
 </div>
 <div class="paragraph">
-<p>So now we see that the user "Piedad Flatley" is a member of "Domain Admins" group which is an admin for computer "<a href="mailto:FLLABDC@TestCompany.Local">FLLABDC@TestCompany.Local</a>". And this computer is a member of "ENTERPRISE DOMAIN CONTROLLERS" group.</p>
+<p>We can see that the user "Piedad Flatley" is a member of "Domain Admins" group, this group has admin access on computer "<a href="mailto:FLLABDC@TestCompany.Local">FLLABDC@TestCompany.Local</a>". And this computer is a member of "ENTERPRISE DOMAIN CONTROLLERS" group.</p>
 </div>
 <div class="paragraph">
 <p>This is how we can picturize the possible impact paths and mitigate risk to avoid unexpected threats.</p>
@@ -435,22 +444,25 @@ RETURN path<!--/code--></pre>
     <br/>
     <div>
       <div class="paragraph">
-<p>We saw possible attack paths for one user, what is the possible extent of this? We can check all the possible paths like this in whole network.</p>
+<p>We saw possible attack paths from one user. What is the possible extent of this analysis? We can check similar possible attack paths in whole network.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->// Targetting a high value object (crown jewel)
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->// Match a high value object
 MATCH (crownJewel {objectid:'S-1-5-21-883232822-274137685-4173207997-512'})
 WITH id(crownJewel) AS crownJewelId
+
 // Match all normal non-high value objects
 MATCH (n) WHERE n.highvalue IS NULL
 WITH id(n) AS sourceId, crownJewelId
+
 // Get shortest paths from all non high value objects to the crown jewel object
 CALL gds.shortestPath.dijkstra.stream("attackPaths", {
     sourceNode: sourceId,
     targetNode: crownJewelId
 }) YIELD sourceNode, targetNode, nodeIds
 WITH nodeIds
+
 // Pair one-one nodes from the path between crown jewel and normal object
 UNWIND apoc.coll.pairsMin(gds.util.asNodes(nodeIds)) AS pair
 WITH pair[0] AS a, pair[1] AS b
@@ -462,21 +474,24 @@ RETURN a.name, 'to', b.name LIMIT 10<!--/code--></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->// Targetting a high value object (crown jewel)
-MATCH (crownJewel {objectid:'S-1-5-21-883232822-274137685-4173207997-512'})
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->MATCH (crownJewel {objectid:'S-1-5-21-883232822-274137685-4173207997-512'})
+
 WITH id(crownJewel) AS crownJewelId
-// Match all normal non-high value objects
+
 MATCH (n) WHERE n.highvalue IS NULL
+
 WITH id(n) AS sourceId, crownJewelId
-// Get shortest paths from all non high value objects to the crown jewel object
+
 CALL gds.shortestPath.dijkstra.stream("attackPaths", {
     sourceNode: sourceId,
     targetNode: crownJewelId
 }) YIELD sourceNode, targetNode, nodeIds
 WITH nodeIds
+
 // Pair one-one nodes from the path between crown jewel and normal object
 UNWIND apoc.coll.pairsMin(gds.util.asNodes(nodeIds)) AS pair
 WITH pair[0] AS a, pair[1] AS b
+
 // Relationship -  path leading from a normal object to a high value object
 MERGE (a)-[r:ATTACK_PATH]-&gt;(b)
 RETURN count(r);<!--/code--></pre>
