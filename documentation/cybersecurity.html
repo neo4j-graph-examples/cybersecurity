@@ -305,10 +305,11 @@ RETURN p LIMIT 50<!--/code--></pre>
     <div>
       <div class="paragraph">
 <p>Cyber security nowadays is seeing a zero trust shift of network defense. This approach allows organization to restrict access controls to network, apps and environment without sacrificing performance and user experience. Zero trust approach trusts on one.
-Using Neo4j graph and its data science features, we can identify all possible threat paths (or attack paths) based on access. In a simple term, analyze any path that a user can take to reach to a high value resource in the network. Is this access (path) necessary?</p>
+Using Neo4j graph and its data science features, we can identify all possible threat paths (or attack paths) based on access.</p>
 </div>
 <div class="paragraph">
-<p>Not necessary? These unwanted access paths can be revoked or controlled.</p>
+<p>In a simple term, analyze any path that a user can take to reach to a high value resource in the network. Check, is this access (path) necessary?
+Not necessary? These unwanted access paths can be revoked or controlled.</p>
 </div>
 <div class="paragraph">
 <p>We are using the Dijkstra source target algorithm here.</p>
@@ -360,10 +361,9 @@ CALL gds.graph.create.cypher("attackPaths",
 <div class="content">
 <pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->MATCH (u:User {name:'PiedadFlatley255@TestCompany.Local' })
 WITH u
+
 // Match a high value object (we call it "crown jewel")
-
 MATCH (crownJewel {highvalue:true})
-
 WITH u, id(crownJewel) AS crownJewelId
 
 // Get shortest paths from user to the crown jewel object
@@ -539,7 +539,7 @@ RETURN count(r);<!--/code--></pre>
 </ul>
 </div>
 <div class="paragraph">
-<p>First, we will create a in-memory graph projection for this. We will consider all node labels and ATTACK_PATH relationship.</p>
+<p>First, we will create an in-memory graph projection for this. We will consider all node labels and ATTACK_PATH relationship.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -601,7 +601,7 @@ ORDER BY a.betweenness DESCENDING LIMIT 25<!--/code--></pre>
     <br/>
     <div>
       <div class="paragraph">
-<p>You can clear the attack paths and projection data using below cypher</p>
+<p>Clear the attack paths and projection data using below cypher</p>
 </div>
 <div class="listingblock">
 <div class="content">
