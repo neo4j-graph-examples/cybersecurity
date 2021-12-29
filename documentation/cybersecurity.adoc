@@ -8,6 +8,7 @@
 :model: model.svg
 :example: example.svg
 :attack-path: attack-path-preview.svg
+:attack-path: user-attack-path.svg
 :dump: https://github.com/neo4j-graph-examples/entity-resolution/tree/main/data
 :nodes: 953
 :relationships: 4858
@@ -161,28 +162,51 @@ We are using the Dijkstra source target algorithm here.
 * https://neo4j.com/docs/graph-data-science/current/algorithms/dijkstra-source-target/[Dijkstra Source-Target^]
 
 === Prepare Graph
-Below cypher will prepare an in memory graph projection for our analysis.
+Below cypher will prepare an in memory graph projection for our analysis. 
+Using gds.graph.create.cypher method, we will create a graph projection using cypher query for both node and relationship specification. 
+For finding attack paths, we have to cover all the nodes and relationships to be included for GDS procedures.
+So instead of specifying all node labels and relationship types to create graph, we specify cypher queries to include all.
 [source,cypher]
 ----
 // Build projection
-CALL gds.graph.create.cypher("attackPaths", 
+CALL gds.graph.create.cypher("attackPaths",
     "MATCH (n) RETURN id(n) AS id",
-    "MATCH (a)-[r]->(b) WHERE type(r) <> 'PATH' AND type(r) <> 'RAW_PATH' " +
-    "  AND type(r) <> 'PATH_0' RETURN id(a) AS source, id(b) AS target"
+    "MATCH (a)-[r]->(b) RETURN id(a) AS source, id(b) AS target"
 );
 ----
 
 === Preview attack paths
 
-Here we generate all possibles path from normal objects to a high value object those might be exploited. 
+Now we try to figure out the possible attack paths. For this, we take a user in question and check what all high value objects (or crown jewels) this user can reach directly or indirectly?
 
-For example- What are possible paths from the user "PiedadFlatley255@TestCompany.Local" to the high value resources like Domain Controller and Domain Admin group?
+All these paths can be termed as possible attack paths.
+
+For example- How many paths are possible from the user "PiedadFlatley255@TestCompany.Local" to the high value resources like Domain, Domain Controller and Domain Admin group?
 
 [source,cypher]
 ----
 MATCH (u:User {name:'PiedadFlatley255@TestCompany.Local' })
 WITH u
-// Targetting a high value object (crown jewel)
+// Targetting a high value object (we call it with name "crown jewel")
+MATCH (crownJewel {highvalue:true})
+WITH u, id(crownJewel) AS crownJewelId
+// Get shortest paths from the user to the crown jewel object
+CALL gds.shortestPath.dijkstra.stream("attackPaths", {
+    sourceNode: id(u), 
+    targetNode: crownJewelId
+}) YIELD path
+RETURN count(path)
+----
+
+Above cypher produces that the user can reach out upto 4 high value assets either directly or indirectly.
+
+Now, lets check what are those assets and what are those possible attack paths?
+
+[source,cypher]
+----
+MATCH (u:User {name:'PiedadFlatley255@TestCompany.Local' })
+WITH u
+// Targetting a high value object (we call it with name "crown jewel")
 MATCH (crownJewel {highvalue:true})
 WITH u, id(crownJewel) AS crownJewelId
 // Get shortest paths from the user to the crown jewel object
@@ -193,13 +217,37 @@ CALL gds.shortestPath.dijkstra.stream("attackPaths", {
 RETURN path
 ----
 
-Above preview query shows that the particular user in question can take numerous paths to reach Domain-Admin or Domain-Controller.
+This shows that user "Piedad Flatley" can reach out to Domain Admins group, Test Company domain, Domain Controllers and Enterprise Domain Controllers groups.
 
 .Attack paths from a user to a high value asset
 image::{img}/{attack-path}[]
 
+Now, lets check how "Piedad Flatley" can reach upto ENTERPRISE DOMAIN CONTROLLERS group?
+
+[source,cypher]
+----
+MATCH (u:User {name:'PiedadFlatley255@TestCompany.Local' })
+WITH u
+// Targetting a high value object (we call it with name "crown jewel")
+MATCH (crownJewel {highvalue:true, objectid: "TestCompany.Local-S-1-5-9"})
+WITH u, id(crownJewel) AS crownJewelId
+// Get shortest paths from the user to the crown jewel object
+CALL gds.shortestPath.dijkstra.stream("attackPaths", {
+    sourceNode: id(u), 
+    targetNode: crownJewelId
+}) YIELD path
+RETURN path
+----
+
+.Attack paths from a user to a high value asset
+image::{img}/{user-attack-path}[]
+
+So now we see that the user "Piedad Flatley" is a member of "Domain Admins" group which is an admin for computer "FLLABDC@TestCompany.Loca". And this computer is a member of "ENTERPRISE DOMAIN CONTROLLERS" group.
+
+This is how we can picturize the possible impact paths and mitigate risk to avoid unexpected threats.
+
 == Materializing attack paths data
-Like we saw for one user, what is the possible extent of this? We can check all the possible paths like this in whole network.
+We saw possible attack paths for one user, what is the possible extent of this? We can check all the possible paths like this in whole network.
 [source,cypher]
 ----
 // Targetting a high value object (crown jewel)
@@ -251,8 +299,10 @@ MATCH p=()-[r:ATTACK_PATH]->() RETURN p LIMIT 25
 
 So we took every possible node in question, and we materialized a very specific link between them which repesents possible hops of attack paths.
 
-== More queries: Weights of nodes through the attack paths
-We can apply more analytics to the data that we generated. We are going to use the different ATTACK_PATH relationships, we are going to project them into analytics graph projection, run it through betweenness algorithm.
+== More analysis: Weights of nodes through the attack paths
+We generated and materialized possible attack paths in the network. Now we must know what all nodes (network objects) are at high risk or can be part of most of the possible attack paths?
+
+For this, we can apply a little more analytics to the ATTACK_PATH paths, we are going to project them into analytics graph projection, run it through betweenness algorithm.
 
 Betweenness centrality is a way of detecting the amount of influence a node has over the flow of information in a graph. It is often used to find nodes that serve as a bridge from one part of a graph to another.
 
@@ -260,7 +310,7 @@ We will assign betweenness score to nodes on ATTACK_PATH. This score can help us
 
 * https://neo4j.com/docs/graph-data-science/current/algorithms/betweenness-centrality/[Betweenness Centrality^]
 
-First, we will create a in-memory graph projection for this.
+First, we will create a in-memory graph projection for this. We will consider all node labels and ATTACK_PATH relationship.
 [source,cypher]
 ----
 CALL gds.graph.create('betweennessGraph', ['User', 'Group','Computer', 'Domain', 'GPO', 'OU'], 'ATTACK_PATH')
@@ -273,7 +323,7 @@ CALL gds.betweenness.write.estimate('betweennessGraph', { writeProperty: 'betwee
 YIELD nodeCount, relationshipCount, bytesMin, bytesMax, requiredMemory
 ----
 
-Third, we can run this procedure and stream results to see the weightage (betweenness score)
+Third, we can run the betweenness procedure and stream results to see the weightage (betweenness score)
 [source,cypher]
 ----
 CALL gds.betweenness.stream('betweennessGraph')
@@ -282,7 +332,7 @@ WITH gds.util.asNode(nodeId) AS n, score
 RETURN n.name, collect(labels(n)), score order by score desc limit 100
 ----
 
-Fourth, we can materialize this weights data by writing them as properties on respective nodes. So we can perform some more analysis.
+Fourth, we can materialize this weights data by writing them as properties on respective nodes.
 [source,cypher]
 ----
 CALL gds.betweenness.write('betweennessGraph', { writeProperty: 'betweenness' })
@@ -298,7 +348,7 @@ RETURN a.name, labels(a), a.objectid, a.betweenness
 ORDER BY a.betweenness DESCENDING LIMIT 25
 ----
 
-You can also visualize the attack paths and heavy weighed nodes in Neo4j Bloom to have some visual analytics over this data.
+We can also visualize the attack paths and heavy weighed nodes in Neo4j Bloom to have some visual analytics over this data.
 
 == Clear attack paths
 You can clear the attack paths and projection data using below cypher
@@ -316,7 +366,7 @@ MATCH ()-[r:ATTACK_PATH]->() DELETE r;
 == Next steps
 === Full Source Code Available on GitHub
 
-* https://github.com/neo4j-graph-examples/graphs-for-cybersecurity[Source Code with Cypher and data dumps^]
+* https://github.com/neo4j-graph-examples/cybersecurity[Source Code with Cypher and data dumps^]
 
 * https://github.com/neo4j-graph-examples/[Other Example Datasets^]
 
