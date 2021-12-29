@@ -142,8 +142,8 @@ CALL
 // Get users who have direct RDP access to machines
 MATCH p=(:User)-[:CAN_RDP]->(:Computer) RETURN p
 UNION ALL
-// Users who got RDP access via groups they are member of
-MATCH p =(:User)-[:MEMBER_OF]->(:Group)-[:CAN_RDP]->(:Computer) RETURN p
+// Users who got RDP access via groups they are member of, this will check relationship levels upto 2 levels
+MATCH p =(:User)-[:MEMBER_OF]->(:Group)-[:MEMBER_OF*0..2]->(:Group)-[:CAN_RDP]->(:Computer) RETURN p
 }
 // Return full paths
 RETURN p LIMIT 50
