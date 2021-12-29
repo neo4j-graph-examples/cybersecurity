@@ -13,7 +13,7 @@ CREATE CONSTRAINT gpo_name IF NOT EXISTS ON (g:GPO) ASSERT (g.name) IS UNIQUE;
 
 
 // Import from json
-CALL apoc.import.json("https://gist.githubusercontent.com/chintan196/ac8107e8545ef91738812099ee9f1acf/raw/da9ceff33e22dd25419c6707f6c8d84cc6552ab2/ad-data")
+CALL apoc.import.json("https://gist.githubusercontent.com/chintan196/ac8107e8545ef91738812099ee9f1acf/raw/cd04ba54bf07b1065b5c30e25b90a68da2c76700/ad-data")
 
 // Export to json
 CALL apoc.export.json.all("all.json",{useTypes:true})

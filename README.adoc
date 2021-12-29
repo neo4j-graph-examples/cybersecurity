@@ -23,7 +23,7 @@
 :cypher: cypher
 :slides: documentation/Cybersecurity_Connections-2021.pdf
 :nodes: 953
-:relationships: 4890
+:relationships: 4858
 ++++
 <br>
 ++++

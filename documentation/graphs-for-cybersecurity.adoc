@@ -10,7 +10,7 @@
 :attack-path: attack-path-preview.svg
 :dump: https://github.com/neo4j-graph-examples/entity-resolution/tree/main/data
 :nodes: 953
-:relationships: 4890
+:relationships: 4858
 :img: img
 
 === Background
@@ -92,7 +92,7 @@ CREATE CONSTRAINT gpo_name IF NOT EXISTS ON (g:GPO) ASSERT (g.name) IS UNIQUE;
 Import json data
 [source,cypher]
 ----
-CALL apoc.import.json("https://gist.githubusercontent.com/chintan196/ac8107e8545ef91738812099ee9f1acf/raw/da9ceff33e22dd25419c6707f6c8d84cc6552ab2/ad-data")
+CALL apoc.import.json("https://gist.githubusercontent.com/chintan196/ac8107e8545ef91738812099ee9f1acf/raw/cd04ba54bf07b1065b5c30e25b90a68da2c76700/ad-data")
 ----
 
 == Test data with simple queries
@@ -251,8 +251,8 @@ MATCH p=()-[r:ATTACK_PATH]->() RETURN p LIMIT 25
 
 So we took every possible node in question, and we materialized a very specific link between them which repesents possible hops of attack paths.
 
-== Weights of nodes through the attack paths
-Now we are going to apply more analytics to the data that we generated. We are going to use the different ATTACK_PATH relationships, we are going to project them into analytics graph projection, run it through betweenness algorithm.
+== More queries: Weights of nodes through the attack paths
+We can apply more analytics to the data that we generated. We are going to use the different ATTACK_PATH relationships, we are going to project them into analytics graph projection, run it through betweenness algorithm.
 
 Betweenness centrality is a way of detecting the amount of influence a node has over the flow of information in a graph. It is often used to find nodes that serve as a bridge from one part of a graph to another.
 
@@ -263,7 +263,7 @@ We will assign betweenness score to nodes on ATTACK_PATH. This score can help us
 First, we will create a in-memory graph projection for this.
 [source,cypher]
 ----
-CALL gds.graph.create('betweennessGraph', 'Base', 'ATTACK_PATH')
+CALL gds.graph.create('betweennessGraph', ['User', 'Group','Computer', 'Domain', 'GPO', 'OU'], 'ATTACK_PATH')
 ----
 
 Second, we will estimate the memory usage for running this procedure on our projected data (nodes and relationships involved). 
