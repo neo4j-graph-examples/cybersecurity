@@ -325,7 +325,7 @@ We will assign betweenness score to nodes on ATTACK_PATH. This score can help us
 
 * https://neo4j.com/docs/graph-data-science/current/algorithms/betweenness-centrality/[Betweenness Centrality^]
 
-First, we will create a in-memory graph projection for this. We will consider all node labels and ATTACK_PATH relationship.
+First, we will create an in-memory graph projection for this. We will consider all node labels and ATTACK_PATH relationship.
 [source,cypher]
 ----
 CALL gds.graph.create('betweennessGraph', ['User', 'Group','Computer', 'Domain', 'GPO', 'OU'], 'ATTACK_PATH')
