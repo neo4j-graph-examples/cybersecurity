@@ -169,7 +169,7 @@ We are using the Dijkstra source target algorithm here.
 === Prepare Graph
 Below cypher will prepare an in memory graph projection for our analysis. 
 Using "gds.graph.create.cypher" method, we will create a graph projection using cypher query. 
-For finding attack paths, we have to include all nodes and relationships GDS analysis.
+For finding attack paths, we have to include all nodes and relationships in GDS analysis.
 So instead of explicitly specifying all node labels and relationship types, we have a provision to specify cypher queries which produce all nodes and relationships.
 [source,cypher]
 ----
