@@ -115,14 +115,6 @@ ifeval::[{zip-file} != false]
 Download the zip file link:{repo}/raw/master/{name}.zip[{name}.zip] and add it as "project from file" to https://neo4j.com/developer/neo4j-desktop[Neo4j Desktop^].
 endif::[]
 
-== Presentation Materials
-
-Slides are available here link:{slides}[]
-
-More of a video person? The use case recording is available on YouTube.
-
-* https://youtu.be/2O2JfqeHJR4[Recording Link]
-
 === Feedback
 
 Feel free to submit issues or pull requests for improvement on this repository.
