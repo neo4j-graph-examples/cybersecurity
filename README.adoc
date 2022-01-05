@@ -126,25 +126,3 @@ More of a video person? The use case recording is available on YouTube.
 === Feedback
 
 Feel free to submit issues or pull requests for improvement on this repository.
-
-
-== References
-* https://github.com/BloodHoundAD/BloodHound[BloodHound]
-
-* https://ernw.de/download/BloodHoundWorkshop/ERNW_DogWhispererHandbook.pdf[Handbook PDF]
-
-* https://github.com/voutilad/BloodHound-Tools/tree/update-to-neo4j4[Bloodhound Tools - DBCreator]
-
-* https://en.wikipedia.org/wiki/Computer_security[Cyber Security]
-
-* https://neo4j.com/docs/bloom-user-guide/current/bloom-perspectives/[Neo4j Bloom Persectives]
-
-* https://neo4j.com/press-releases/neo4j-for-cybersecurity/[Neo4j for Cyber Security]
-
-* https://cybersecurityventures.com/hackerpocalypse-cybercrime-report-2016/[Hackerpocalypse Cybercrime Report-2016]
-
-* https://www.accenture.com/_acnmedia/pdf-96/accenture-2019-cost-of-cybercrime-study-final.pdf[Cost of Cybercrime Study]
-
-* https://www.gartner.com/en/documents/3889055/forecast-analysis-information-security-worldwide-2q18-up[Forecast Analysis: Information Security, Worldwide]
-
-* https://github.com/voutilad/BloodHound-Tools/tree/update-to-neo4j4[BloodHound Datacreator Library]
