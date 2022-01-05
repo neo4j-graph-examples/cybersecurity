@@ -59,9 +59,6 @@ ifeval::[{use-plugin} != false]
 
 Required plugins: {use-plugin}
 
-* https://neo4j.com/docs/graph-data-science/current/[Neo4j Graph Data Science Library for Neo4j 4.4.X]
-* https://neo4j.com/developer/neo4j-apoc/[APOC for Neo4j v4.4.X]
-
 endif::[]
 
 ifeval::[{demodb} != false]
