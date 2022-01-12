@@ -48,7 +48,7 @@ image::{attack-image}[width=750]
 .Example Query:
 [source,cypher,role=query-example,param-name=name,param-value="HilaryOlivia226@TestCompany.Local",result-column=computer,expected-result="xxx"]
 ----
-MATCH (u:User {name: 'HilaryOlivia226@TestCompany.Local'})-[:CAN_RDP]->(r) RETURN r.name as computer
+MATCH (u:User {name: $name})-[:CAN_RDP]->(r) RETURN r.name as computer
 ----
 
 === Setup
