@@ -93,7 +93,7 @@ CREATE CONSTRAINT gpo_name IF NOT EXISTS ON (g:GPO) ASSERT (g.name) IS UNIQUE;
 Import json data
 [source,cypher]
 ----
-CALL apoc.import.json("https://gist.githubusercontent.com/chintan196/ac8107e8545ef91738812099ee9f1acf/raw/cd04ba54bf07b1065b5c30e25b90a68da2c76700/ad-data")
+CALL apoc.import.json("https://raw.githubusercontent.com/neo4j-graph-examples/cybersecurity/main/data/cybersecurity-json-data.json")
 ----
 
 == Test data with simple queries
