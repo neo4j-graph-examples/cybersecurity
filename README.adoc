@@ -24,9 +24,6 @@
 :slides: documentation/Cybersecurity_Connections-2021.pdf
 :nodes: 953
 :relationships: 4858
-++++
-<br>
-++++
 
 == {long-name}
 
@@ -42,7 +39,6 @@ image::{example}[width=750]
 
 .Bloom
 image::{attack-image}[width=750]
-
 
 
 .Example Query:
@@ -71,9 +67,7 @@ Rendered guide available via: `:play {rendered-guide}`
 
 Unrendered guide: link:{guide}[]
 
-Load graph data via the following:
-
-In this demo, the BloodHound Tools project was used to populate a fictitious Active Directory graph in Neo4j.
+In this demo, the https://bloodhound.readthedocs.io/en/latest/[BloodHound Tools project^] was used to populate a fictitious Active Directory graph in Neo4j.
 
 However, for simplicity, we have made a few small changes and created ready-made dump file and json data files for example demonstration purpose. You can load data with any of these methods.
 

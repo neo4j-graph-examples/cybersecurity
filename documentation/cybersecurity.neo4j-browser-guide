@@ -1,0 +1,695 @@
+<style type="text/css" media="screen">
+/*
+.nodes-image {
+	margin:-100;
+}
+*/	
+@import url("//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css");
+
+.imageblock .content img, .image img {max-width: 900px;max-height: 300px;}
+.deck h3, .deck h4 {display: block !important;margin-bottom:8px;margin-top:5px;}
+.listingblock {margin:8px;}
+.pull-bottom {position:relative;bottom:1em;}
+.admonitionblock td.icon [class^="fa icon-"]{font-size:2.5em;text-shadow:1px 1px 2px rgba(0,0,0,.5);cursor:default}
+.admonitionblock td.icon .icon-note:before{content:"\f05a";color:#19407c}
+.admonitionblock td.icon .icon-tip:before{content:"\f0eb";text-shadow:1px 1px 2px rgba(155,155,0,.8);color:#111}
+.admonitionblock td.icon .icon-warning:before{content:"\f071";color:#bf6900}
+.admonitionblock td.icon .icon-caution:before{content:"\f06d";color:#bf3400}
+.admonitionblock td.icon .icon-important:before{content:"\f06a";color:#bf0000}
+.admonitionblock.note.speaker { display:none; }
+</style>
+<style type="text/css" media="screen">
+/* #editor.maximize-editor .CodeMirror-code { font-size:24px; line-height:26px; } */
+</style>
+<article class="guide" ng-controller="AdLibDataController">
+  <carousel class="deck container-fluid">
+    <!--slide class="row-fluid">
+      <div class="col-sm-3">
+        <h3>Graphs for Cybersecurity</h3>
+        <p class="lead">Information</p>
+			<!dl>
+				
+				
+				
+				
+				
+			</dl>
+		</div>
+      <div class="col-sm-9">
+        <figure>
+          <img style="width:300px" src=""/>
+        </figure>
+      </div>
+    </slide-->
+    
+
+
+<slide class="row-fluid">
+  <div class="col-sm-12">
+    <h3>Graphs for Cybersecurity</h3>
+    <br/>
+    <div>
+      <div class="paragraph">
+<p>Computer security, cybersecurity or information technology security (IT security) is the protection of computer systems and networks from information disclosure, theft of or damage to their hardware, software, or electronic data, as well as from the disruption or misdirection of the services they provide.</p>
+</div>
+<div class="paragraph">
+<p>The field is becoming increasingly significant due to the continuously expanding reliance on computer systems, the Internet and wireless network standards such as Bluetooth and Wi-Fi, and due to the growth of "smart" devices.</p>
+</div>
+<div class="paragraph">
+<p>Cybersecurity is also one of the significant challenges in the contemporary world, due to its complexity, both in terms of political usage and technology.</p>
+</div>
+<div class="paragraph">
+<p>Graph database can help in implementing an effective solution in the field of Cyber Security.</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+Defenders think in lists. Attackers think in graphs. As long as this is true, attackers win.
+</blockquote>
+<div class="attribution">
+<cite>Engineer from Microsoft Threat Intelligence Center</cite><br>
+&#8212; John Lambert
+</div>
+</div>
+<div class="paragraph">
+<p>Our networks are <strong>connected graphs</strong>.
+We can use a graph database based solution to have a holistic view of enterprise network.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="https://guides.neo4j.com/sandbox/cybersecurity/img/example.svg" alt="example">
+</div>
+</div>
+<div class="paragraph">
+<p>This helps us to</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>quickly identify risks,</p>
+</li>
+<li>
+<p>detecting anomalies and</p>
+</li>
+<li>
+<p>protecting our systems with confidence</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>to minimize impacts.</p>
+</div>
+	</div>
+  </div>
+</slide>
+
+
+
+<slide class="row-fluid">
+  <div class="col-sm-12">
+    <h3>Demo Use-case</h3>
+    <br/>
+    <div>
+      <div class="imageblock" style="float: left;">
+<div class="content">
+<a class="image" href="https://bloodhound.readthedocs.io/en/latest/"><img src="https://guides.neo4j.com/sandbox/cybersecurity/img/bloodhound.png" alt="bloodhound"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>This demo is based on the data and themes from the BloodHound project.
+Bloodhound is a great tool for auditing your Active Directory environment.
+It uses  Neo4j as a backing datastore for storage and querying.
+We recommend looking into BloodHound or reading the very comprehensive handbook on it to learn more about Blood Hound.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://bloodhound.readthedocs.io/en/latest/" target="_blank">BloodHound Documentation</a></p>
+</li>
+<li>
+<p><a href="https://ernw.de/download/BloodHoundWorkshop/ERNW_DogWhispererHandbook.pdf" target="_blank">BloodHound Handbook</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>We have conceptualized a BloodHound example to prepare a fictitious Active Directory environment and showed some useful analysis.</p>
+</div>
+<div class="paragraph">
+<p>Active directory helps IT teams monitor various network resources and users.
+It allows to grant and revoke different user permissions.</p>
+</div>
+<div class="paragraph">
+<p>Active Directory comprises of various objects. We have considered below sample objects for this use case.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>User</p>
+</li>
+<li>
+<p>Computer</p>
+</li>
+<li>
+<p>Group</p>
+</li>
+<li>
+<p>Domain</p>
+</li>
+<li>
+<p>Group Policy Object (GPO) - Virtual Collection of Policy Settings</p>
+</li>
+<li>
+<p>OU (Organization Unit) - Sub division</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Details:</p>
+</div>
+<div class="paragraph">
+<p>Nodes 953 Relationships 4858</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="https://guides.neo4j.com/sandbox/cybersecurity/img/{model}" alt="{model}">
+</div>
+<div class="title">Figure 1. Model</div>
+</div>
+	</div>
+  </div>
+</slide>
+
+
+
+<slide class="row-fluid">
+  <div class="col-sm-12">
+    <h3>Test data with simple queries</h3>
+    <br/>
+    <div>
+      <div class="paragraph">
+<p>We will test the graph with some simple queries to get network objects information.</p>
+</div>
+<div class="listingblock">
+<div class="title">List active sessions in the network.</div>
+<div class="content">
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->// Get the path where there is an active HAS_SESSION relationship present and show all objects from path
+MATCH p=(:Computer)-[r:HAS_SESSION]-&gt;(:User)
+RETURN p LIMIT 25;<!--/code--></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Return all high value assets (we call them crownJewels) from the Network, also list what all groups, users have direct access to these high value objects.</p>
+</div>
+<div class="paragraph">
+<p>These assets have an additional label <code>HighValue</code> that makes them easy to select and differentiate.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->MATCH (o:HighValue)&lt;--(a)
+WHERE a:User OR a:Group
+RETURN o, a<!--/code--></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Groups those have write (<code>WRITE_OWNER</code>) access to the domain object? Also find what all users have generic all access (full rights) from these groups</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->MATCH path = (d:Domain { name: 'TestCompany.Local' })
+  &lt;-[:WRITE_OWNER]-(g:Group)-[:GENERIC_ALL]-&gt;(u:User)
+RETURN path LIMIT 10<!--/code--></pre>
+</div>
+</div>
+	</div>
+  </div>
+</slide>
+
+
+
+<slide class="row-fluid">
+  <div class="col-sm-12">
+    <h3>More Advanced Analysis Queries</h3>
+    <br/>
+    <div>
+      <div class="paragraph">
+<p>List all the machines where there are more than one active sessions running from different users.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->// Match computers and users which have active HAS_SESSION relationship
+MATCH (u:User)&lt;-[:HAS_SESSION]-(c:Computer)
+
+// Group user sessions by computer
+WITH c, collect(distinct u.name) as users, count(*) as sessions
+// Condition of more than one active session
+WHERE sessions &gt; 1
+RETURN c.name, users;<!--/code--></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Get all users who have RDP access, and the computer where they have the access.
+Some Users have RDP access for self, some users have RDP access available through groups they are part of (inherited).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->CALL
+{
+// Get users who have direct RDP access to machines
+MATCH p=(:User)-[:CAN_RDP]-&gt;(:Computer) RETURN p
+
+UNION ALL
+
+// Users who got RDP access via groups (or group hierarchy) they are member of, this will check relationship levels upto 2 levels
+MATCH p =(:User)-[:MEMBER_OF]-&gt;(:Group)-[:MEMBER_OF*0..2]-&gt;(:Group)-[:CAN_RDP]-&gt;(:Computer) RETURN p
+}
+
+// Return full paths
+RETURN p LIMIT 50<!--/code--></pre>
+</div>
+</div>
+	</div>
+  </div>
+</slide>
+
+
+
+<slide class="row-fluid">
+  <div class="col-sm-12">
+    <h3>Analyzing possible attack paths</h3>
+    <br/>
+    <div>
+      <div class="paragraph">
+<p>Cyber security nowadays is seeing a zero trust (trust no one) shift of network defense.
+This approach allows organization to restrict access controls to network, apps and environment without sacrificing performance and user experience.</p>
+</div>
+<div class="paragraph">
+<p>In a simple terms, we analyze any path that a user can take to reach to a high value resource in the network.</p>
+</div>
+<div class="paragraph">
+<p><em>Is this access (path) necessary?</em>
+If not, these unwanted access paths can be revoked or controlled.</p>
+</div>
+	</div>
+  </div>
+</slide>
+
+
+
+<slide class="row-fluid">
+  <div class="col-sm-12">
+    <h3>Find possible attack paths</h3>
+    <br/>
+    <div>
+      <div class="paragraph">
+<p>Let us take one particular user and check what all high value objects (or crown jewels) this user can reach directly or indirectly?</p>
+</div>
+<div class="paragraph">
+<p>All these paths can be termed as possible attack paths.</p>
+</div>
+<div class="paragraph">
+<p>For example: How many paths are possible from the user <em>"<a href="mailto:PiedadFlatley255@TestCompany.Local">PiedadFlatley255@TestCompany.Local</a>"</em> to the high value resources like <em>Domain</em>, <em>Domain Controller</em> and <em>Domain Admin</em> group?</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->MATCH (u:User {name:'PiedadFlatley255@TestCompany.Local' })
+// Match a high value object (we call it "crown jewel")
+MATCH (crownJewel:HighValue)
+
+MATCH path = shortestPath((u)-[*..100]-&gt;(crownJewel))
+
+RETURN count(path)<!--/code--></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>That Cypher statement shows, that the user can reach out upto 4 high value assets either directly or indirectly.</p>
+</div>
+<div class="paragraph">
+<p>Now, lets check what are these high value assets and what are these possible attack paths?</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->MATCH (u:User {name:'PiedadFlatley255@TestCompany.Local' })
+MATCH (crownJewel:HighValue)
+
+MATCH path = shortestPath((u)-[*..100]-&gt;(crownJewel))
+
+RETURN path<!--/code--></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This shows that user <em>"Piedad Flatley"</em> can reach out to</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>Domain Admins</em> group,</p>
+</li>
+<li>
+<p><em>Test Company</em> domain,</p>
+</li>
+<li>
+<p><em>Domain Controllers</em> and</p>
+</li>
+<li>
+<p><em>Enterprise Domain Controllers</em> groups.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="https://guides.neo4j.com/sandbox/cybersecurity/img/attack-path-preview.svg" alt="attack path preview">
+</div>
+<div class="title">Figure 2. Attack paths from a user to a high value asset</div>
+</div>
+	</div>
+  </div>
+</slide>
+
+
+
+<slide class="row-fluid">
+  <div class="col-sm-12">
+    <h3>Analyze single attack path</h3>
+    <br/>
+    <div>
+      <div class="paragraph">
+<p>Now, let us take a close look at one attack path. Check - How <em>"Piedad Flatley"</em> can reach upto <em>"ENTERPRISE DOMAIN CONTROLLERS"</em> group?</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->MATCH (u:User {name:'PiedadFlatley255@TestCompany.Local' })
+
+// Match on object id of the ENTERPRISE DOMAIN CONTROLLERS Group
+MATCH (crownJewel :Group:HighValue {objectid: "TestCompany.Local-S-1-5-9"})
+
+MATCH path = shortestPath((u)-[*..100]-&gt;(crownJewel))
+
+RETURN path<!--/code--></pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="https://guides.neo4j.com/sandbox/cybersecurity/img/user-attack-path.svg" alt="user attack path">
+</div>
+<div class="title">Figure 3. Attack paths from a user to a high value asset</div>
+</div>
+<div class="paragraph">
+<p>We can see that the user <em>"Piedad Flatley"</em> is a member of <em>"Domain Admins"</em> group, this group has admin access on computer <em>"<a href="mailto:FLLABDC@TestCompany.Local">FLLABDC@TestCompany.Local</a>"</em>.
+And this computer is a member of <em>"ENTERPRISE DOMAIN CONTROLLERS"</em> group.</p>
+</div>
+<div class="paragraph">
+<p>This is how we can picturize the possible impact paths and mitigate risk to avoid unexpected threats.</p>
+</div>
+	</div>
+  </div>
+</slide>
+
+
+
+<slide class="row-fluid">
+  <div class="col-sm-12">
+    <h3>Materializing attack paths data</h3>
+    <br/>
+    <div>
+      <div class="paragraph">
+<p>We saw possible attack paths from one user. What is the possible extent of this analysis? We can check similar possible attack paths in whole network.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->// Match a high value object
+MATCH (crownJewel :Group {objectid:'S-1-5-21-883232822-274137685-4173207997-512'})
+
+// Match all normal non-high value objects
+MATCH (source) WHERE NOT source:HighValue
+
+MATCH path = shortestPath((source)-[*..100]-&gt;(crownJewel))
+
+// Pair one-one nodes from the path between crown jewel and normal object
+UNWIND apoc.coll.pairsMin(nodes(path)) AS pair
+WITH pair[0] AS a, pair[1] AS b
+RETURN a.name, 'to', b.name LIMIT 10<!--/code--></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In order to formalize this, for a possible risk mitigation,  we can materialize the attack paths by writing a relationship with name "ATTACK_PATH"</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->// Match a high value object
+MATCH (crownJewel:Group {objectid:'S-1-5-21-883232822-274137685-4173207997-512'})
+
+// Match all normal non-high value objects
+MATCH (source) WHERE NOT source:HighValue
+
+MATCH path = shortestPath((source)-[*..100]-&gt;(crownJewel))
+
+// Pair one-one nodes from the path between crown jewel and normal object
+UNWIND apoc.coll.pairsMin(nodes(path)) AS pair
+WITH pair[0] AS a, pair[1] AS b
+
+// Relationship -  path leading from a normal object to a high value object
+MERGE (a)-[r:ATTACK_PATH]-&gt;(b)
+RETURN count(r);<!--/code--></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Check ATTACK_PATHS.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->MATCH p=()-[r:ATTACK_PATH]-&gt;() RETURN p LIMIT 25;<!--/code--></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>So we took every possible node in question, and we materialized a very specific link between them which repesents possible hops of attack paths.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title=""></i>
+</td>
+<td class="content">
+To only see the attack paths, disable the config setting "Connect result nodes" in the left side Neo4j Browser sidebar.
+</td>
+</tr>
+</table>
+</div>
+	</div>
+  </div>
+</slide>
+
+
+
+<slide class="row-fluid">
+  <div class="col-sm-12">
+    <h3>Algorithmic analysis: Weights of nodes through the attack paths</h3>
+    <br/>
+    <div>
+      <div class="paragraph">
+<p>Using Neo4j and its data science library, we can analyze all possible threat paths (or attack paths) based on access.</p>
+</div>
+<div class="paragraph">
+<p>We are using the <a href="https://neo4j.com/docs/graph-data-science/current/algorithms/dijkstra-source-target/" target="_blank">Dijkstra Source-Target algorithm</a> here.</p>
+</div>
+
+
+
+   <h4>Betweenness Algorithm</h4>
+   <div class="paragraph">
+<p>We generated and materialized possible attack paths in the network.
+Now we must know what all nodes (network objects) are at high risk or can be part of most of the possible attack paths?</p>
+</div>
+<div class="paragraph">
+<p>For this, we can apply a little more analytics to the ATTACK_PATH paths, we are going to project them into analytics graph projection, run it through the <strong>Betweenness algorithm</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Betweenness centrality is a way of detecting the amount of influence a node has over the flow of information in a graph. It is often used to find nodes that serve as a bridge from one part of a graph to another.</p>
+</div>
+<div class="paragraph">
+<p>We will assign betweenness score to nodes on <code>ATTACK_PATH</code>. This score can help us in determining who from the nodes are heavy headers in attack paths.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://neo4j.com/docs/graph-data-science/current/algorithms/betweenness-centrality/" target="_blank">Betweenness Centrality</a></p>
+</li>
+</ul>
+</div>
+	</div>
+  </div>
+</slide>
+
+
+
+<slide class="row-fluid">
+  <div class="col-sm-12">
+    <h3>Prepare Graph Projection</h3>
+    <br/>
+    <div>
+      <div class="paragraph">
+<p>Below statement will prepare an in memory graph projection, named 'betweennessGraph' for our analysis.</p>
+</div>
+<div class="paragraph">
+<p>First, we will create an in-memory graph projection for this. We will consider <strong>all</strong> node labels and <code>ATTACK_PATH</code> relationship.</p>
+</div>
+<div class="paragraph">
+<p>The documentation has more details on <a href="https://neo4j.com/docs/graph-data-science/current/management-ops/graph-catalog-ops/" target="_blank">in-memory graph projections</a>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->CALL gds.graph.create('betweennessGraph',
+  ['User', 'Group','Computer', 'Domain', 'GPO', 'OU'], 'ATTACK_PATH');<!--/code--></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now we can run the betweenness procedure and stream results to see the weightage (betweenness score)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->CALL gds.betweenness.stream('betweennessGraph')
+YIELD nodeId, score
+WITH gds.util.asNode(nodeId) AS n, score
+RETURN n.name, labels(n), score
+ORDER BY score DESC
+LIMIT 100;<!--/code--></pre>
+</div>
+</div>
+	</div>
+  </div>
+</slide>
+
+
+
+<slide class="row-fluid">
+  <div class="col-sm-12">
+    <h3>Store and use betweenness scores</h3>
+    <br/>
+    <div>
+      <div class="paragraph">
+<p>We can now materialize these weights by writing them as properties on respective nodes.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->CALL gds.betweenness.write('betweennessGraph', { writeProperty: 'betweenness' })
+YIELD centralityDistribution, nodePropertiesWritten;<!--/code--></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, check users and groups which have much higher weights</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->MATCH (a)-[r:ATTACK_PATH]-&gt;(b)
+WHERE a:User OR a:Group
+RETURN a.name, labels(a), a.objectid, a.betweenness
+ORDER BY a.betweenness DESC
+LIMIT 25;<!--/code--></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We can also visualize the attack paths and heavy weighed nodes in Neo4j Bloom to have some visual analytics over this data.</p>
+</div>
+	</div>
+  </div>
+</slide>
+
+
+
+<slide class="row-fluid">
+  <div class="col-sm-12">
+    <h3>Clear attack paths</h3>
+    <br/>
+    <div>
+      <div class="paragraph">
+<p>Clear the attack paths and projection data using below cypher</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->// Drop graphs
+CALL gds.graph.list() YIELD graphName
+CALL gds.graph.drop(graphName) YIELD graphName AS dropped
+RETURN count(*);
+
+// Remove attack paths
+MATCH ()-[r:ATTACK_PATH]-&gt;() DELETE r;<!--/code--></pre>
+</div>
+</div>
+	</div>
+  </div>
+</slide>
+
+
+
+<slide class="row-fluid">
+  <div class="col-sm-12">
+    <h3>Resources</h3>
+    <br/>
+    <div>
+      
+
+
+   <h4>Full Source Code Available on GitHub</h4>
+   <div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/neo4j-graph-examples/cybersecurity" target="_blank">Source Code with Cypher and data dumps</a></p>
+</li>
+<li>
+<p><a href="https://github.com/neo4j-graph-examples/" target="_blank">Other Example Datasets</a></p>
+</li>
+</ul>
+</div>
+
+
+
+   <h4>Neo4j References</h4>
+   <div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.youtube.com/watch?v=2O2JfqeHJR4" target="_blank">Demo video Cyber Security</a></p>
+</li>
+<li>
+<p><a href="https://neo4j.com/docs/bloom-user-guide/current/bloom-perspectives/" target="_blank">Neo4j Bloom Persectives</a></p>
+</li>
+<li>
+<p><a href="https://github.com/voutilad/BloodHound-Tools/tree/update-to-neo4j4" target="_blank">BloodHound Datacreator Library</a></p>
+</li>
+<li>
+<p><a href="https://neo4j.com/press-releases/neo4j-for-cybersecurity/" target="_blank">Neo4j for Cyber Security</a></p>
+</li>
+</ul>
+</div>
+
+
+
+   <h4>External References</h4>
+   <div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/BloodHoundAD/BloodHound" target="_blank">BloodHound</a></p>
+</li>
+<li>
+<p><a href="https://ernw.de/download/BloodHoundWorkshop/ERNW_DogWhispererHandbook.pdf" target="_blank">Bloodhound Handbook PDF</a></p>
+</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Computer_security" target="_blank">Cyber Security- Wikipedia</a></p>
+</li>
+<li>
+<p><a href="https://cybersecurityventures.com/hackerpocalypse-cybercrime-report-2016/" target="_blank">Hackerpocalypse Cybercrime Report-2016</a></p>
+</li>
+<li>
+<p><a href="https://www.accenture.com/_acnmedia/pdf-96/accenture-2019-cost-of-cybercrime-study-final.pdf" target="_blank">Cost of Cybercrime Study</a></p>
+</li>
+<li>
+<p><a href="https://www.gartner.com/en/documents/3889055/forecast-analysis-information-security-worldwide-2q18-up" target="_blank">Forecast Analysis: Information Security, Worldwide</a></p>
+</li>
+<li>
+<p><a href="https://github.com/JohnLaTwC/Shared/blob/master/Defenders%20think%20in%20lists.%20Attackers%20think%20in%20graphs.%20As%20long%20as%20this%20is%20true%2C%20attackers%20win.md" target="_blank">Functional Post - John Lambert</a></p>
+</li>
+</ul>
+</div>
+	</div>
+  </div>
+</slide>
+  </carousel>
+</article>
