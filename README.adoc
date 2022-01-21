@@ -1,5 +1,5 @@
 :name: cybersecurity
-:long-name: Neo4j Connections: Graphs for Cybersecurity
+:long-name: Graphs for Cybersecurity
 :description: Cybersecurity, Active Directory environment auditing and analysis of possible attack paths using graph
 :icon: font
 :tags: Cybersecurity, ITSecurity, ActiveDirectory, Auditing, Attack Paths Analysis, AD Management
@@ -72,7 +72,7 @@ In this demo, the https://bloodhound.readthedocs.io/en/latest/[BloodHound Tools 
 However, for simplicity, we have made a few small changes and created ready-made dump file and json data files for example demonstration purpose. You can load data with any of these methods.
 
 ifeval::[{data} != false]
-==== Data files: `{data}`
+==== Data files
 
 Import flat files (csv, json, etc) using Cypher's https://neo4j.com/docs/cypher-manual/current/clauses/load-csv/[`LOAD CSV`], https://neo4j.com/labs/apoc/4.1/import/load-json/[LOAD JSON], https://neo4j.com/labs/apoc/[APOC library], or https://neo4j.com/developer/data-import/[other methods].
 endif::[]
@@ -80,7 +80,9 @@ endif::[]
 ifeval::[{use-dump-file} != false]
 ==== Dump file: `link:{use-dump-file}[]`
 
-* Drop the file into the `Files` section of a project in Neo4j Desktop. Then choose the option to `Create new DBMS from dump` option from the file options.
+* You can create a new Project in https://neo4j.com/product/developer-tools/#desktop[Neo4j Desktop] from our example repositories, or
+
+* Drop the file into the `Files` section of a project in Neo4j Desktop. Then choose the option to `Create new DBMS from dump` option from the file options, or
 
 * Use the neo4j-admin tool to load data from the command line with the command below.
 
