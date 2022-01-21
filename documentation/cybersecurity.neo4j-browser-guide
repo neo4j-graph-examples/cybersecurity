@@ -70,6 +70,7 @@ Defenders think in lists. Attackers think in graphs. As long as this is true, at
 &#8212; John Lambert
 </div>
 </div>
+<br/>
 <div class="paragraph">
 <p>Our networks are <strong>connected graphs</strong>.
 We can use a graph database based solution to have a holistic view of enterprise network.</p>
@@ -170,7 +171,7 @@ It allows to grant and revoke different user permissions.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://guides.neo4j.com/sandbox/cybersecurity/img/{model}" alt="{model}">
+<img src="https://guides.neo4j.com/sandbox/cybersecurity/img/model.svg" alt="Model">
 </div>
 <div class="title">Figure 1. Model</div>
 </div>
