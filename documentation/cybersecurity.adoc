@@ -332,17 +332,17 @@ We are using the https://neo4j.com/docs/graph-data-science/current/algorithms/di
 
 [source,cypher]
 ----
-CALL gds.graph.create('attackPaths','*','*')
+CALL gds.graph.project('attackPaths','*','*')
 ----
 
-Using "gds.graph.create.cypher" method, we will create a graph projection using cypher query. 
+Using "gds.graph.project.cypher" method, we will create a graph projection using cypher query. 
 For finding attack paths, we have to include all nodes and relationships in GDS analysis.
 So instead of explicitly specifying all node labels and relationship types, we have a provision to specify cypher queries which produce all nodes and relationships.
 
 [source,cypher]
 ----
 // Build projection
-CALL gds.graph.create.cypher("attackPaths",
+CALL gds.graph.project.cypher("attackPaths",
 
 // Include all node labels
 "MATCH (n) RETURN id(n) AS id",
@@ -375,7 +375,7 @@ The documentation has more details on https://neo4j.com/docs/graph-data-science/
 
 [source,cypher]
 ----
-CALL gds.graph.create('betweennessGraph', 
+CALL gds.graph.project('betweennessGraph', 
   ['User', 'Group','Computer', 'Domain', 'GPO', 'OU'], 'ATTACK_PATH');
 ----
 
