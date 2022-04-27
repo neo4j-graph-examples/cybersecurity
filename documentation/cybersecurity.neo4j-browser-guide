@@ -70,7 +70,6 @@ Defenders think in lists. Attackers think in graphs. As long as this is true, at
 &#8212; John Lambert
 </div>
 </div>
-<br/>
 <div class="paragraph">
 <p>Our networks are <strong>connected graphs</strong>.
 We can use a graph database based solution to have a holistic view of enterprise network.</p>
@@ -171,7 +170,7 @@ It allows to grant and revoke different user permissions.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://guides.neo4j.com/sandbox/cybersecurity/img/model.svg" alt="Model">
+<img src="https://guides.neo4j.com/sandbox/cybersecurity/img/model.svg" alt="model">
 </div>
 <div class="title">Figure 1. Model</div>
 </div>
@@ -538,7 +537,7 @@ Now we must know what all nodes (network objects) are at high risk or can be par
 </div>
 <div class="listingblock">
 <div class="content">
-<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->CALL gds.graph.create('betweennessGraph',
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->CALL gds.graph.project('betweennessGraph',
   ['User', 'Group','Computer', 'Domain', 'GPO', 'OU'], 'ATTACK_PATH');<!--/code--></pre>
 </div>
 </div>
