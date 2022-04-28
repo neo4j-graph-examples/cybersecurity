@@ -1,7 +1,7 @@
 :name: cybersecurity
 :long-name: Graphs for Cybersecurity
 :description: Cybersecurity, Active Directory environment auditing and analysis of possible attack paths using graph
-:icon: font
+:icon: documentation/img/cybersecurity-icon.svg
 :tags: Cybersecurity, ITSecurity, ActiveDirectory, Auditing, Attack Paths Analysis, AD Management
 :author: Neo4j
 :demodb: false
@@ -24,6 +24,8 @@
 :slides: documentation/Cybersecurity_Connections-2021.pdf
 :nodes: 953
 :relationships: 4858
+
+image::{icon}[width=100]
 
 == {long-name}
 

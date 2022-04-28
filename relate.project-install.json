@@ -1,6 +1,7 @@
 {
     "name": "graphs-for-cybersecurity",
     "description":"Cybersecurity, Active Directory environment auditing and analysis of possible attack paths using graph",
+    "icon": "documentation/img/cybersecurity-icon.svg",
     "dbms": [
       {
           "dumpFile": "data/cyber-security-ad-44.dump",
