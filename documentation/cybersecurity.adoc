@@ -29,7 +29,7 @@ Defenders think in lists. Attackers think in graphs. As long as this is true, at
 Our networks are *connected graphs*.
 We can use a graph database based solution to have a holistic view of enterprise network. 
 
-image::{img}/example.svg[]
+image::{img}/example.svg[width=470]
 
 This helps us to
 
@@ -41,7 +41,7 @@ to minimize impacts.
 
 == Demo Use-case
 
-image::{img}/bloodhound.png[float=left,link="https://bloodhound.readthedocs.io/en/latest/"]
+image::{img}/bloodhound.png[float=left,link="https://bloodhound.readthedocs.io/en/latest/",window="_blank"]
 
 This demo is based on the data and themes from the BloodHound project. 
 Bloodhound is a great tool for auditing your Active Directory environment. 
@@ -71,7 +71,7 @@ Details:
 Nodes {nodes} Relationships {relationships}
 
 .Model
-image::{img}/model.svg[]
+image::{img}/model.svg[width=470]
 
 ifndef::env-guide[]
 === Notes
@@ -149,7 +149,7 @@ Groups those have write (`WRITE_OWNER`) access to the domain object? Also find w
 
 [source,cypher]
 ----
-MATCH path = (d:Domain { name: 'TestCompany.Local' })
+MATCH path=(d:Domain {name:'TestCompany.Local'})
   <-[:WRITE_OWNER]-(g:Group)-[:GENERIC_ALL]->(u:User)
 RETURN path LIMIT 10
 ----
@@ -164,7 +164,8 @@ List all the machines where there are more than one active sessions running from
 MATCH (u:User)<-[:HAS_SESSION]-(c:Computer)
 
 // Group user sessions by computer
-WITH c, collect(distinct u.name) as users, count(*) as sessions
+WITH c, collect(distinct u.name) as users, 
+     count(*) as sessions
 // Condition of more than one active session
 WHERE sessions > 1
 RETURN c.name, users;
@@ -183,7 +184,10 @@ MATCH p=(:User)-[:CAN_RDP]->(:Computer) RETURN p
 UNION ALL
 
 // Users who got RDP access via groups (or group hierarchy) they are member of, this will check relationship levels upto 2 levels
-MATCH p =(:User)-[:MEMBER_OF]->(:Group)-[:MEMBER_OF*0..2]->(:Group)-[:CAN_RDP]->(:Computer) RETURN p
+MATCH p=(:User)-[:MEMBER_OF]->(:Group)
+               -[:MEMBER_OF*0..2]->
+        (:Group)-[:CAN_RDP]->(:Computer) 
+RETURN p
 }
 
 // Return full paths
@@ -210,7 +214,7 @@ For example: How many paths are possible from the user _"PiedadFlatley255@TestCo
 
 [source,cypher]
 ----
-MATCH (u:User {name:'PiedadFlatley255@TestCompany.Local' })
+MATCH (u:User {name:'PiedadFlatley255@TestCompany.Local'})
 // Match a high value object (we call it "crown jewel")
 MATCH (crownJewel:HighValue)
 
@@ -225,7 +229,7 @@ Now, lets check what are these high value assets and what are these possible att
 
 [source,cypher]
 ----
-MATCH (u:User {name:'PiedadFlatley255@TestCompany.Local' })
+MATCH (u:User {name:'PiedadFlatley255@TestCompany.Local'})
 MATCH (crownJewel:HighValue)
 
 MATCH path = shortestPath((u)-[*..100]->(crownJewel))
@@ -245,14 +249,14 @@ image::{img}/attack-path-preview.svg[]
 
 == Analyze single attack path
 
-Now, let us take a close look at one attack path. Check - How _"Piedad Flatley"_ can reach upto _"ENTERPRISE DOMAIN CONTROLLERS"_ group?
+Now, let us take a close look at one attack path. Check - How `"Piedad Flatley"` can reach upto `"ENTERPRISE DOMAIN CONTROLLERS"` group?
 
 [source,cypher]
 ----
 MATCH (u:User {name:'PiedadFlatley255@TestCompany.Local' })
 
 // Match on object id of the ENTERPRISE DOMAIN CONTROLLERS Group
-MATCH (crownJewel :Group:HighValue {objectid: "TestCompany.Local-S-1-5-9"})
+MATCH (crownJewel:Group:HighValue {objectid: "TestCompany.Local-S-1-5-9"})
 
 MATCH path = shortestPath((u)-[*..100]->(crownJewel))
 
@@ -260,10 +264,10 @@ RETURN path
 ----
 
 .Attack paths from a user to a high value asset
-image::{img}/user-attack-path.svg[]
+image::{img}/user-attack-path.svg[width=470]
 
-We can see that the user _"Piedad Flatley"_ is a member of _"Domain Admins"_ group, this group has admin access on computer _"FLLABDC@TestCompany.Local"_. 
-And this computer is a member of _"ENTERPRISE DOMAIN CONTROLLERS"_ group.
+We can see that the user _"Piedad Flatley"_ is a member of `"Domain Admins"` group, this group has admin access on computer `"FLLABDC@TestCompany.Local"`. 
+And this computer is a member of `"ENTERPRISE DOMAIN CONTROLLERS"` group.
 
 This is how we can picturize the possible impact paths and mitigate risk to avoid unexpected threats.
 
@@ -287,7 +291,7 @@ WITH pair[0] AS a, pair[1] AS b
 RETURN a.name, 'to', b.name LIMIT 10
 ----
 
-In order to formalize this, for a possible risk mitigation,  we can materialize the attack paths by writing a relationship with name "ATTACK_PATH"
+In order to formalize this, for a possible risk mitigation,  we can materialize the attack paths by writing a relationship with name `"ATTACK_PATH"`
 
 [source,cypher]
 ----
@@ -311,12 +315,13 @@ RETURN count(r);
 Check ATTACK_PATHS. 
 [source,cypher]
 ----
-MATCH p=()-[r:ATTACK_PATH]->() RETURN p LIMIT 25;
+MATCH p=()-[r:ATTACK_PATH]->() 
+RETURN p LIMIT 25;
 ----
 
 So we took every possible node in question, and we materialized a very specific link between them which repesents possible hops of attack paths.
 
-NOTE: To only see the attack paths, disable the config setting "Connect result nodes" in the left side Neo4j Browser sidebar.
+NOTE: To only see the attack paths, disable the config setting "Connect result nodes" in the left side Neo4j Browser sidebar and re-run the query.
 
 ifndef::env-auradb[]
 
@@ -376,7 +381,8 @@ The documentation has more details on https://neo4j.com/docs/graph-data-science/
 [source,cypher]
 ----
 CALL gds.graph.project('betweennessGraph', 
-  ['User', 'Group','Computer', 'Domain', 'GPO', 'OU'], 'ATTACK_PATH');
+  ['User', 'Group','Computer', 'Domain', 'GPO', 'OU'], 
+  'ATTACK_PATH');
 ----
 
 ////
@@ -384,7 +390,8 @@ Second, we will estimate the memory usage for running this procedure on our proj
 
 [source,cypher]
 ----
-CALL gds.betweenness.write.estimate('betweennessGraph', { writeProperty: 'betweenness' })
+CALL gds.betweenness.write.estimate('betweennessGraph', 
+     { writeProperty: 'betweenness' })
 YIELD nodeCount, relationshipCount, bytesMin, bytesMax, requiredMemory
 ----
 ////
@@ -407,7 +414,8 @@ We can now materialize these weights by writing them as properties on respective
 
 [source,cypher]
 ----
-CALL gds.betweenness.write('betweennessGraph', { writeProperty: 'betweenness' })
+CALL gds.betweenness.write('betweennessGraph', 
+     { writeProperty: 'betweenness' })
 YIELD centralityDistribution, nodePropertiesWritten;
 ----
 
