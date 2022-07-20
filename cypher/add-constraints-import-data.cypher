@@ -1,4 +1,3 @@
-// Add constraints - schema
 CREATE CONSTRAINT group_name IF NOT EXISTS ON (g:Group) ASSERT g.name IS UNIQUE;
 CREATE CONSTRAINT domain_name IF NOT EXISTS ON (d:Domain) ASSERT d.name IS UNIQUE;
 CREATE CONSTRAINT group_object_id IF NOT EXISTS ON (g:Group) ASSERT (g.objectid) IS UNIQUE;
@@ -13,7 +12,9 @@ CREATE CONSTRAINT gpo_name IF NOT EXISTS ON (g:GPO) ASSERT (g.name) IS UNIQUE;
 
 
 // Import from json
-CALL apoc.import.json("https://gist.githubusercontent.com/chintan196/ac8107e8545ef91738812099ee9f1acf/raw/cd04ba54bf07b1065b5c30e25b90a68da2c76700/ad-data")
+CALL apoc.import.json("https://raw.githubusercontent.com/neo4j-graph-examples/cybersecurity/main/data/cybersecurity-json-data.json");
+
+MATCH (n) WHERE n.highvalue SET n:HighValue;
 
 // Export to json
 CALL apoc.export.json.all("all.json",{useTypes:true})
