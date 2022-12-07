@@ -6,7 +6,7 @@
 */	
 @import url("//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css");
 
-.imageblock .content img, .image img {max-width: 900px;max-height: 300px;}
+.imageblock .content img, .image img {max-width: 100%;}
 .deck h3, .deck h4 {display: block !important;margin-bottom:8px;margin-top:5px;}
 .listingblock {margin:8px;}
 .pull-bottom {position:relative;bottom:1em;}
@@ -76,7 +76,7 @@ We can use a graph database based solution to have a holistic view of enterprise
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://guides.neo4j.com/sandbox/cybersecurity/img/example.svg" alt="example">
+<img src="https://guides.neo4j.com/sandbox/cybersecurity/img/example.svg" alt="example" width="470">
 </div>
 </div>
 <div class="paragraph">
@@ -170,7 +170,7 @@ It allows to grant and revoke different user permissions.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://guides.neo4j.com/sandbox/cybersecurity/img/model.svg" alt="model">
+<img src="https://guides.neo4j.com/sandbox/cybersecurity/img/model.svg" alt="model" width="470">
 </div>
 <div class="title">Figure 1. Model</div>
 </div>
@@ -214,7 +214,7 @@ RETURN o, a<!--/code--></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->MATCH path = (d:Domain { name: 'TestCompany.Local' })
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->MATCH path=(d:Domain {name:'TestCompany.Local'})
   &lt;-[:WRITE_OWNER]-(g:Group)-[:GENERIC_ALL]-&gt;(u:User)
 RETURN path LIMIT 10<!--/code--></pre>
 </div>
@@ -239,7 +239,8 @@ RETURN path LIMIT 10<!--/code--></pre>
 MATCH (u:User)&lt;-[:HAS_SESSION]-(c:Computer)
 
 // Group user sessions by computer
-WITH c, collect(distinct u.name) as users, count(*) as sessions
+WITH c, collect(distinct u.name) as users,
+     count(*) as sessions
 // Condition of more than one active session
 WHERE sessions &gt; 1
 RETURN c.name, users;<!--/code--></pre>
@@ -259,7 +260,10 @@ MATCH p=(:User)-[:CAN_RDP]-&gt;(:Computer) RETURN p
 UNION ALL
 
 // Users who got RDP access via groups (or group hierarchy) they are member of, this will check relationship levels upto 2 levels
-MATCH p =(:User)-[:MEMBER_OF]-&gt;(:Group)-[:MEMBER_OF*0..2]-&gt;(:Group)-[:CAN_RDP]-&gt;(:Computer) RETURN p
+MATCH p=(:User)-[:MEMBER_OF]-&gt;(:Group)
+               -[:MEMBER_OF*0..2]-&gt;
+        (:Group)-[:CAN_RDP]-&gt;(:Computer)
+RETURN p
 }
 
 // Return full paths
@@ -310,7 +314,7 @@ If not, these unwanted access paths can be revoked or controlled.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->MATCH (u:User {name:'PiedadFlatley255@TestCompany.Local' })
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->MATCH (u:User {name:'PiedadFlatley255@TestCompany.Local'})
 // Match a high value object (we call it "crown jewel")
 MATCH (crownJewel:HighValue)
 
@@ -327,7 +331,7 @@ RETURN count(path)<!--/code--></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->MATCH (u:User {name:'PiedadFlatley255@TestCompany.Local' })
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->MATCH (u:User {name:'PiedadFlatley255@TestCompany.Local'})
 MATCH (crownJewel:HighValue)
 
 MATCH path = shortestPath((u)-[*..100]-&gt;(crownJewel))
@@ -372,14 +376,14 @@ RETURN path<!--/code--></pre>
     <br/>
     <div>
       <div class="paragraph">
-<p>Now, let us take a close look at one attack path. Check - How <em>"Piedad Flatley"</em> can reach upto <em>"ENTERPRISE DOMAIN CONTROLLERS"</em> group?</p>
+<p>Now, let us take a close look at one attack path. Check - How <code>"Piedad Flatley"</code> can reach upto <code>"ENTERPRISE DOMAIN CONTROLLERS"</code> group?</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->MATCH (u:User {name:'PiedadFlatley255@TestCompany.Local' })
 
 // Match on object id of the ENTERPRISE DOMAIN CONTROLLERS Group
-MATCH (crownJewel :Group:HighValue {objectid: "TestCompany.Local-S-1-5-9"})
+MATCH (crownJewel:Group:HighValue {objectid: "TestCompany.Local-S-1-5-9"})
 
 MATCH path = shortestPath((u)-[*..100]-&gt;(crownJewel))
 
@@ -388,13 +392,13 @@ RETURN path<!--/code--></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://guides.neo4j.com/sandbox/cybersecurity/img/user-attack-path.svg" alt="user attack path">
+<img src="https://guides.neo4j.com/sandbox/cybersecurity/img/user-attack-path.svg" alt="user attack path" width="470">
 </div>
 <div class="title">Figure 3. Attack paths from a user to a high value asset</div>
 </div>
 <div class="paragraph">
-<p>We can see that the user <em>"Piedad Flatley"</em> is a member of <em>"Domain Admins"</em> group, this group has admin access on computer <em>"<a href="mailto:FLLABDC@TestCompany.Local">FLLABDC@TestCompany.Local</a>"</em>.
-And this computer is a member of <em>"ENTERPRISE DOMAIN CONTROLLERS"</em> group.</p>
+<p>We can see that the user <em>"Piedad Flatley"</em> is a member of <code>"Domain Admins"</code> group, this group has admin access on computer <code>"<a href="mailto:FLLABDC@TestCompany.Local">FLLABDC@TestCompany.Local</a>"</code>.
+And this computer is a member of <code>"ENTERPRISE DOMAIN CONTROLLERS"</code> group.</p>
 </div>
 <div class="paragraph">
 <p>This is how we can picturize the possible impact paths and mitigate risk to avoid unexpected threats.</p>
@@ -430,7 +434,7 @@ RETURN a.name, 'to', b.name LIMIT 10<!--/code--></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>In order to formalize this, for a possible risk mitigation,  we can materialize the attack paths by writing a relationship with name "ATTACK_PATH"</p>
+<p>In order to formalize this, for a possible risk mitigation,  we can materialize the attack paths by writing a relationship with name <code>"ATTACK_PATH"</code></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -456,7 +460,8 @@ RETURN count(r);<!--/code--></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->MATCH p=()-[r:ATTACK_PATH]-&gt;() RETURN p LIMIT 25;<!--/code--></pre>
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->MATCH p=()-[r:ATTACK_PATH]-&gt;()
+RETURN p LIMIT 25;<!--/code--></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -469,7 +474,7 @@ RETURN count(r);<!--/code--></pre>
 <i class="fa icon-note" title=""></i>
 </td>
 <td class="content">
-To only see the attack paths, disable the config setting "Connect result nodes" in the left side Neo4j Browser sidebar.
+To only see the attack paths, disable the config setting "Connect result nodes" in the left side Neo4j Browser sidebar and re-run the query.
 </td>
 </tr>
 </table>
@@ -538,7 +543,8 @@ Now we must know what all nodes (network objects) are at high risk or can be par
 <div class="listingblock">
 <div class="content">
 <pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->CALL gds.graph.project('betweennessGraph',
-  ['User', 'Group','Computer', 'Domain', 'GPO', 'OU'], 'ATTACK_PATH');<!--/code--></pre>
+  ['User', 'Group','Computer', 'Domain', 'GPO', 'OU'],
+  'ATTACK_PATH');<!--/code--></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -570,7 +576,8 @@ LIMIT 100;<!--/code--></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->CALL gds.betweenness.write('betweennessGraph', { writeProperty: 'betweenness' })
+<pre mode="cypher"  class="highlight pre-scrollable programlisting cm-s-neo code runnable standalone-example ng-binding" data-lang="cypher" lang="cypher"><!--code class="cypher language-cypher"-->CALL gds.betweenness.write('betweennessGraph',
+     { writeProperty: 'betweenness' })
 YIELD centralityDistribution, nodePropertiesWritten;<!--/code--></pre>
 </div>
 </div>

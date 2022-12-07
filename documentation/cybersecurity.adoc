@@ -98,17 +98,17 @@ Alternatively, you can prepare schema, add constraints and use below Cypher quer
 .Prepare Schema
 [source,cypher]
 ----
-CREATE CONSTRAINT group_name IF NOT EXISTS ON (g:Group) ASSERT g.name IS UNIQUE;
-CREATE CONSTRAINT domain_name IF NOT EXISTS ON (d:Domain) ASSERT d.name IS UNIQUE;
-CREATE CONSTRAINT group_object_id IF NOT EXISTS ON (g:Group) ASSERT (g.objectid) IS UNIQUE;
-CREATE CONSTRAINT ou_name IF NOT EXISTS ON (o:OU) ASSERT (o.name) IS UNIQUE;
-CREATE CONSTRAINT domain_object_id IF NOT EXISTS ON (d:Domain) ASSERT (d.objectid) IS UNIQUE;
-CREATE CONSTRAINT ou_object_id IF NOT EXISTS ON (o:OU) ASSERT (o.objectid) IS UNIQUE;
-CREATE CONSTRAINT user_name IF NOT EXISTS ON (u:User) ASSERT (u.name) IS UNIQUE;
-CREATE CONSTRAINT computer_objectid IF NOT EXISTS ON (c:Computer) ASSERT (c.objectid) IS UNIQUE;
-CREATE CONSTRAINT computer_name IF NOT EXISTS ON (c:Computer) ASSERT (c.name) IS UNIQUE;
-CREATE CONSTRAINT user_objectid IF NOT EXISTS ON (u:User) ASSERT (u.objectid) IS UNIQUE;
-CREATE CONSTRAINT gpo_name IF NOT EXISTS ON (g:GPO) ASSERT (g.name) IS UNIQUE;
+CREATE CONSTRAINT group_name IF NOT EXISTS FOR (g:Group) REQUIRE g.name IS UNIQUE;
+CREATE CONSTRAINT domain_name IF NOT EXISTS FOR (d:Domain) REQUIRE d.name IS UNIQUE;
+CREATE CONSTRAINT group_object_id IF NOT EXISTS FOR (g:Group) REQUIRE (g.objectid) IS UNIQUE;
+CREATE CONSTRAINT ou_name IF NOT EXISTS FOR (o:OU) REQUIRE (o.name) IS UNIQUE;
+CREATE CONSTRAINT domain_object_id IF NOT EXISTS FOR (d:Domain) REQUIRE (d.objectid) IS UNIQUE;
+CREATE CONSTRAINT ou_object_id IF NOT EXISTS FOR (o:OU) REQUIRE (o.objectid) IS UNIQUE;
+CREATE CONSTRAINT user_name IF NOT EXISTS FOR (u:User) REQUIRE (u.name) IS UNIQUE;
+CREATE CONSTRAINT computer_objectid IF NOT EXISTS FOR (c:Computer) REQUIRE (c.objectid) IS UNIQUE;
+CREATE CONSTRAINT computer_name IF NOT EXISTS FOR (c:Computer) REQUIRE (c.name) IS UNIQUE;
+CREATE CONSTRAINT user_objectid IF NOT EXISTS FOR (u:User) REQUIRE (u.objectid) IS UNIQUE;
+CREATE CONSTRAINT gpo_name IF NOT EXISTS FOR (g:GPO) REQUIRE (g.name) IS UNIQUE;
 ----
 
 .Import json data
