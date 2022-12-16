@@ -1,0 +1,305 @@
+== Graphs for Cybersecurity
+:name: cybersecurity
+:long-name: Graphs for Cybersecurity
+:description: Cybersecurity, Active Directory environment auditing and analysis of possible attack paths using graph
+:icon: font
+:tags: Cybersecurity, ITSecurity, ActiveDirectory, Auditing, Attack Paths Analysis, AD Management
+:author: Neo4j
+:dump: https://github.com/neo4j-graph-examples/entity-resolution/tree/main/data
+:nodes: 953
+:relationships: 4858
+:img: https://guides.neo4j.com/auradb/cybersecurity/img
+
+Computer security, cybersecurity or information technology security (IT security) is the protection of computer systems and networks from information disclosure, theft of or damage to their hardware, software, or electronic data, as well as from the disruption or misdirection of the services they provide.
+
+The field is becoming increasingly significant due to the  ever-expanding reliance on computer systems, the Internet and wireless network standards such as Bluetooth and Wi-Fi, and due to the growth of "smart" devices. 
+
+Cybersecurity is also one of the significant challenges in the contemporary world, due to its complexity, both in terms of political usage and technology.
+
+////
+Losses attributed to cybercrime are expected to reach $10.5 trillion by 2025*, growing at a rate of 15 percent annually. Costs include damage and destruction of data, stolen money, theft of intellectual property, personal and financial data, investigation, restoration, and more. While the digital economy is flourishing, 68 percent of business leaders recognize their cybersecurity risks are also increasing, urging many to invest in the right tools. Gartner predicts the global information security market will reach a staggering $170.4 billion USD by 2022*.
+////
+
+Graph databases can help in implementing an effective solution in the field of Cyber Security.
+
+[quote, John Lambert, Engineer from Microsoft Threat Intelligence Center]
+Defenders think in lists. Attackers think in graphs. As long as this is true, attackers win.
+
+
+Our networks are *connected graphs*.
+We can use a graph database-based solution to get a holistic view of enterprise network. 
+
+image::{img}/example.svg[width=470]
+
+This helps us to
+
+1. quickly identify risks,
+2. detecting anomalies and 
+3. protecting our systems with confidence 
+
+to minimize impacts.
+
+== Demo Use-case
+
+image::{img}/bloodhound.png[float=left,link="https://bloodhound.readthedocs.io/en/latest/",window="_blank"]
+
+This demo is based on the data and themes from the BloodHound project. 
+Bloodhound is a great tool for auditing your Active Directory environment. 
+It uses Neo4j as a backing datastore for storage and querying. 
+We recommend looking into BloodHound or reading the very comprehensive handbook on it to learn more about BloodHound.
+
+
+* https://bloodhound.readthedocs.io/en/latest/[BloodHound Documentation^]
+* https://ernw.de/download/BloodHoundWorkshop/ERNW_DogWhispererHandbook.pdf[BloodHound Handbook^]
+
+We have conceptualized a BloodHound example to prepare a fictitious Active Directory environment and showed some useful analysis.
+
+Active directory helps IT teams monitor various network resources and users. 
+It allows to grant and revoke different user permissions.
+
+Active Directory comprises of various objects. 
+We have considered below sample objects for this use case:
+
+* User
+* Computer
+* Group
+* Domain
+* Group Policy Object (GPO) - Virtual Collection of Policy Settings
+* OU (Organization Unit) - Sub division
+
+Details:
+
+Nodes {nodes} Relationships {relationships}
+
+.Model
+image::{img}/model.svg[width=470]
+
+
+== Test data with simple queries
+
+We will test the graph with some simple queries to get network objects information.
+
+.List active sessions in the network.
+[source,cypher]
+----
+// Get the path where there is an active HAS_SESSION relationship present and show all objects from path
+MATCH p=(:Computer)-[r:HAS_SESSION]->(:User) 
+RETURN p LIMIT 25;
+----
+
+Return all high value assets (we call them crownJewels) from the Network, also list what all groups, users have direct access to these high value objects.
+
+These assets have an additional label `HighValue` that makes them easy to select and differentiate.
+
+
+[source,cypher]
+----
+MATCH (o:HighValue)<--(a)
+WHERE a:User OR a:Group
+RETURN o, a
+----
+
+Find groups that have write (`WRITE_OWNER`) access to the domain object and which users have generic all-access (full rights) from these groups.
+
+[source,cypher]
+----
+MATCH path=(d:Domain {name:'TestCompany.Local'})
+  <-[:WRITE_OWNER]-(g:Group)-[:GENERIC_ALL]->(u:User)
+RETURN path LIMIT 10
+----
+
+== More Advanced Analysis Queries
+
+List all the machines where there are more than one active session running from different users.
+
+[source,cypher]
+----
+// Match computers and users which have active HAS_SESSION relationship
+MATCH (u:User)<-[:HAS_SESSION]-(c:Computer)
+
+// Group user sessions by computer
+WITH c, collect(distinct u.name) as users, 
+     count(*) as sessions
+// Condition of more than one active session
+WHERE sessions > 1
+RETURN c.name, users;
+----
+
+Get all users who have RDP access, and the computer where they have the access. 
+Some Users have RDP access for self, some users have RDP access available through groups they are part of (inherited).
+
+[source,cypher]
+----
+CALL
+{
+// Get users who have direct RDP access to machines
+MATCH p=(:User)-[:CAN_RDP]->(:Computer) RETURN p
+
+UNION ALL
+
+// Users who got RDP access via groups (or group hierarchy) they are member of, this will check relationship levels up to 2 levels
+MATCH p=(:User)-[:MEMBER_OF]->(:Group)
+               -[:MEMBER_OF*0..2]->
+        (:Group)-[:CAN_RDP]->(:Computer) 
+RETURN p
+}
+
+// Return full paths
+RETURN p LIMIT 50
+----
+
+== Analyzing possible attack paths
+
+Cyber security nowadays is seeing a zero trust (trust no one) shift of network defense. 
+This approach allows organization to restrict access controls to network, apps and environment without sacrificing performance and user experience. 
+
+In a simple terms, we analyze any path that a user can take to reach to a high value resource in the network. 
+
+_Is this access (path) necessary?_ 
+If not, these unwanted access paths can be revoked or controlled. 
+
+== Find possible attack paths
+
+Let's take one particular user and check what all high value objects (or crownJewels) this user can reach directly or indirectly?
+
+All these paths can be termed as possible attack paths.
+
+For example: How many paths are possible from the user _"PiedadFlatley255@TestCompany.Local"_ to the high value resources like _Domain_, _Domain Controller_ and _Domain Admin_ group?
+
+[source,cypher]
+----
+MATCH (u:User {name:'PiedadFlatley255@TestCompany.Local'})
+// Match a high value object (we call it "crownJewel")
+MATCH (crownJewel:HighValue)
+
+MATCH path = shortestPath((u)-[*..100]->(crownJewel))
+
+RETURN count(path)
+----
+
+This Cypher statement shows that the user can reach up to 4 high value assets either directly or indirectly.
+
+Now, let's check what these high value assets are and which the possible attack paths are?
+
+[source,cypher]
+----
+MATCH (u:User {name:'PiedadFlatley255@TestCompany.Local'})
+MATCH (crownJewel:HighValue)
+
+MATCH path = shortestPath((u)-[*..100]->(crownJewel))
+
+RETURN path
+----
+
+This shows that user _"Piedad Flatley"_ can reach out to 
+
+* _Domain Admins_ group,
+* _Test Company_ domain, 
+* _Domain Controllers_ and 
+* _Enterprise Domain Controllers_ groups.
+
+.Attack paths from a user to a high value asset
+image::{img}/attack-path-preview.svg[]
+
+== Analyze single attack path
+
+Now, let us take a close look at one attack path. 
+How can `"Piedad Flatley"` reach the `"ENTERPRISE DOMAIN CONTROLLERS"` group?
+
+[source,cypher]
+----
+MATCH (u:User {name:'PiedadFlatley255@TestCompany.Local' })
+
+// Match on object id of the ENTERPRISE DOMAIN CONTROLLERS Group
+MATCH (crownJewel:Group:HighValue {objectid: "TestCompany.Local-S-1-5-9"})
+
+MATCH path = shortestPath((u)-[*..100]->(crownJewel))
+
+RETURN path
+----
+
+.Attack paths from a user to a high value asset
+image::{img}/user-attack-path.svg[width=470]
+
+We can see that the user _"Piedad Flatley"_ is a member of `"Domain Admins"` group, this group has admin access on computer `"FLLABDC@TestCompany.Local"`. 
+And this computer is a member of `"ENTERPRISE DOMAIN CONTROLLERS"` group.
+
+This is how we can visualize the possible impact paths and mitigate risk to avoid unexpected threats.
+
+== Materializing attack paths data
+
+We saw possible attack paths from one user. 
+What is the possible extent of this analysis? 
+We can check similar possible attack paths in whole network.
+
+[source,cypher]
+----
+// Match a high value object
+MATCH (crownJewel :Group {objectid:'S-1-5-21-883232822-274137685-4173207997-512'})
+
+// Match all normal non-high value objects
+MATCH (source) WHERE NOT source:HighValue
+
+MATCH path = shortestPath((source)-[*..100]->(crownJewel))
+
+// Pair one-one nodes from the path between crown jewel and normal object
+UNWIND apoc.coll.pairsMin(nodes(path)) AS pair
+WITH pair[0] AS a, pair[1] AS b
+RETURN a.name, 'to', b.name LIMIT 10
+----
+
+In order to formalize this, for a possible risk mitigation, we can materialize the attack paths by writing a relationship with the name `"ATTACK_PATH"`.
+
+[source,cypher]
+----
+// Match a high value object
+MATCH (crownJewel:Group {objectid:'S-1-5-21-883232822-274137685-4173207997-512'})
+
+// Match all normal non-high value objects
+MATCH (source) WHERE NOT source:HighValue
+
+MATCH path = shortestPath((source)-[*..100]->(crownJewel))
+
+// Pair one-one nodes from the path between crownJewel and normal object
+UNWIND apoc.coll.pairsMin(nodes(path)) AS pair
+WITH pair[0] AS a, pair[1] AS b
+
+// Relationship -  path leading from a normal object to a high value object
+MERGE (a)-[r:ATTACK_PATH]->(b)
+RETURN count(r);
+----
+
+Check ATTACK_PATHS. 
+[source,cypher]
+----
+MATCH p=()-[r:ATTACK_PATH]->() 
+RETURN p LIMIT 25;
+----
+
+In this example, we took every possible node in question and we materialized a very specific link between them which repesents possible hops of attack paths.
+
+
+
+== Resources
+
+=== Full Source Code Available on GitHub
+
+* https://github.com/neo4j-graph-examples/cybersecurity[Source Code with Cypher and data dumps^]
+* https://github.com/neo4j-graph-examples/[Other Example Datasets^]
+
+=== Neo4j References
+
+* https://www.youtube.com/watch?v=2O2JfqeHJR4[Demo video Cyber Security^]
+* https://neo4j.com/docs/bloom-user-guide/current/bloom-perspectives/[Neo4j Bloom Persectives^]
+* https://github.com/voutilad/BloodHound-Tools/tree/update-to-neo4j4[BloodHound Datacreator Library^]
+* https://neo4j.com/press-releases/neo4j-for-cybersecurity/[Neo4j for Cyber Security^]
+
+=== External References
+
+* https://github.com/BloodHoundAD/BloodHound[BloodHound^]
+* https://ernw.de/download/BloodHoundWorkshop/ERNW_DogWhispererHandbook.pdf[Bloodhound Handbook PDF^]
+* https://en.wikipedia.org/wiki/Computer_security[Cyber Security- Wikipedia^]
+* https://cybersecurityventures.com/hackerpocalypse-cybercrime-report-2016/[Hackerpocalypse Cybercrime Report-2016^]
+* https://www.accenture.com/_acnmedia/pdf-96/accenture-2019-cost-of-cybercrime-study-final.pdf[Cost of Cybercrime Study^]
+* https://www.gartner.com/en/documents/3889055/forecast-analysis-information-security-worldwide-2q18-up[Forecast Analysis: Information Security, Worldwide^]
+* https://github.com/JohnLaTwC/Shared/blob/master/Defenders%20think%20in%20lists.%20Attackers%20think%20in%20graphs.%20As%20long%20as%20this%20is%20true%2C%20attackers%20win.md[Functional Post - John Lambert^]
