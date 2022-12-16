@@ -74,52 +74,52 @@ Nodes {nodes} Relationships {relationships}
 .Model
 image::{img}/model.svg[width=470]
 
-ifndef::env-guide[]
-=== Notes
+// ifndef::env-guide[]
+// === Notes
 
-In this demonstration, we have used Neo4j APOC (Awesome Procedures on Cypher) and Neo4j GDS (Graph Data Science) libraries for a few Cypher statements.
+// In this demonstration, we have used Neo4j APOC (Awesome Procedures on Cypher) and Neo4j GDS (Graph Data Science) libraries for a few Cypher statements.
 
-//How is this going to work?
-To execute the Cypher queries with APOC or GDS procedures, you will need to add these libraries as plugins to your Neo4j database instance.
+// //How is this going to work?
+// To execute the Cypher queries with APOC or GDS procedures, you will need to add these libraries as plugins to your Neo4j database instance.
 
-For more details on APOC and GDS, please refer below links.
+// For more details on APOC and GDS, please refer below links.
 
-* https://neo4j.com/labs/apoc/[APOC^]
-* https://neo4j.com/docs/graph-data-science/current/[GDS^]
+// * https://neo4j.com/labs/apoc/[APOC^]
+// * https://neo4j.com/docs/graph-data-science/current/[GDS^]
 
-== Prepare the graph
+// == Prepare the graph
 
-We will first prepare the graph by preparing schema, loading nodes and relationships. 
-In order to load the graph data, you can use dump files available on Github repository of this example and follow data load process to load the graph. 
+// We will first prepare the graph by preparing schema, loading nodes and relationships. 
+// In order to load the graph data, you can use dump files available on Github repository of this example and follow data load process to load the graph. 
 
-* https://github.com/neo4j-graph-examples/graphs-for-cybersecurity/tree/main/data[Data Dump Files^]
+// * https://github.com/neo4j-graph-examples/graphs-for-cybersecurity/tree/main/data[Data Dump Files^]
 
-Alternatively, you can prepare schema, add constraints and use below Cypher query that uses APOC json load procedure to load the json data.
+// Alternatively, you can prepare schema, add constraints and use below Cypher query that uses APOC json load procedure to load the json data.
 
-.Prepare Schema
-[source,cypher]
-----
-CREATE CONSTRAINT group_name IF NOT EXISTS FOR (g:Group) REQUIRE g.name IS UNIQUE;
-CREATE CONSTRAINT domain_name IF NOT EXISTS FOR (d:Domain) REQUIRE d.name IS UNIQUE;
-CREATE CONSTRAINT group_object_id IF NOT EXISTS FOR (g:Group) REQUIRE (g.objectid) IS UNIQUE;
-CREATE CONSTRAINT ou_name IF NOT EXISTS FOR (o:OU) REQUIRE (o.name) IS UNIQUE;
-CREATE CONSTRAINT domain_object_id IF NOT EXISTS FOR (d:Domain) REQUIRE (d.objectid) IS UNIQUE;
-CREATE CONSTRAINT ou_object_id IF NOT EXISTS FOR (o:OU) REQUIRE (o.objectid) IS UNIQUE;
-CREATE CONSTRAINT user_name IF NOT EXISTS FOR (u:User) REQUIRE (u.name) IS UNIQUE;
-CREATE CONSTRAINT computer_objectid IF NOT EXISTS FOR (c:Computer) REQUIRE (c.objectid) IS UNIQUE;
-CREATE CONSTRAINT computer_name IF NOT EXISTS FOR (c:Computer) REQUIRE (c.name) IS UNIQUE;
-CREATE CONSTRAINT user_objectid IF NOT EXISTS FOR (u:User) REQUIRE (u.objectid) IS UNIQUE;
-CREATE CONSTRAINT gpo_name IF NOT EXISTS FOR (g:GPO) REQUIRE (g.name) IS UNIQUE;
-----
+// .Prepare Schema
+// [source,cypher]
+// ----
+// CREATE CONSTRAINT group_name IF NOT EXISTS FOR (g:Group) REQUIRE g.name IS UNIQUE;
+// CREATE CONSTRAINT domain_name IF NOT EXISTS FOR (d:Domain) REQUIRE d.name IS UNIQUE;
+// CREATE CONSTRAINT group_object_id IF NOT EXISTS FOR (g:Group) REQUIRE (g.objectid) IS UNIQUE;
+// CREATE CONSTRAINT ou_name IF NOT EXISTS FOR (o:OU) REQUIRE (o.name) IS UNIQUE;
+// CREATE CONSTRAINT domain_object_id IF NOT EXISTS FOR (d:Domain) REQUIRE (d.objectid) IS UNIQUE;
+// CREATE CONSTRAINT ou_object_id IF NOT EXISTS FOR (o:OU) REQUIRE (o.objectid) IS UNIQUE;
+// CREATE CONSTRAINT user_name IF NOT EXISTS FOR (u:User) REQUIRE (u.name) IS UNIQUE;
+// CREATE CONSTRAINT computer_objectid IF NOT EXISTS FOR (c:Computer) REQUIRE (c.objectid) IS UNIQUE;
+// CREATE CONSTRAINT computer_name IF NOT EXISTS FOR (c:Computer) REQUIRE (c.name) IS UNIQUE;
+// CREATE CONSTRAINT user_objectid IF NOT EXISTS FOR (u:User) REQUIRE (u.objectid) IS UNIQUE;
+// CREATE CONSTRAINT gpo_name IF NOT EXISTS FOR (g:GPO) REQUIRE (g.name) IS UNIQUE;
+// ----
 
-.Import json data
-[source,cypher]
-----
-CALL apoc.import.json("https://raw.githubusercontent.com/neo4j-graph-examples/cybersecurity/main/data/cybersecurity-json-data.json");
+// .Import json data
+// [source,cypher]
+// ----
+// CALL apoc.import.json("https://raw.githubusercontent.com/neo4j-graph-examples/cybersecurity/main/data/cybersecurity-json-data.json");
 
-MATCH (n) WHERE n.highvalue SET n:HighValue;
-----
-endif::[]
+// MATCH (n) WHERE n.highvalue SET n:HighValue;
+// ----
+// endif::[]
 
 == Test data with simple queries
 
@@ -325,10 +325,10 @@ RETURN p LIMIT 25;
 
 In this example, we took every possible node in question and we materialized a very specific link between them which repesents possible hops of attack paths.
 
-[NOTE]
-====
-To only see the attack paths, disable the config setting "Connect result nodes" in the left side Neo4j Browser sidebar and re-run the query.
-====
+// [NOTE]
+// ====
+// To only see the attack paths, disable the config setting "Connect result nodes" in the left side Neo4j Browser sidebar and re-run the query.
+// ====
 
 ifndef::env-auradb[]
 
